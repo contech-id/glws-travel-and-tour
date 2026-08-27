@@ -1,0 +1,67 @@
+{
+  "services": [
+    {
+      "slug": "eo-korporat-mice",
+      "title": "EO Korporat & MICE",
+      "shortTitle": "EO Korporat/MICE",
+      "badge": "Corporate Event Solution",
+      "heroImage": "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=2200&q=85",
+      "summary": "Solusi menyeluruh untuk meeting, incentive, conference, exhibition, gathering, dan perjalanan korporat yang dirancang sesuai tujuan perusahaan.",
+      "startingPrice": "Mulai Rp25.000.000",
+      "responseTime": "1 hari kerja",
+      "clients": "10-500 peserta",
+      "gallery": [
+        "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1507501336603-6e31db2be093?auto=format&fit=crop&w=900&q=80"
+      ],
+      "benefits": ["Konsep acara sesuai identitas perusahaan", "Vendor dan venue terkurasi", "PIC khusus selama persiapan", "Laporan anggaran transparan", "Dokumentasi profesional", "Dukungan perjalanan peserta"],
+      "scope": ["Perencanaan konsep dan anggaran", "Venue, akomodasi, dan transportasi", "Produksi panggung dan multimedia", "Registrasi serta hospitality peserta", "Aktivitas team building", "Dokumentasi dan laporan acara"],
+      "process": ["Konsultasi kebutuhan dan tujuan acara", "Penyusunan konsep, venue, dan anggaran", "Koordinasi vendor serta persiapan teknis", "Pelaksanaan dan pengawasan acara", "Evaluasi serta laporan akhir"],
+      "faq": ["Layanan tersedia untuk acara dalam dan luar kota.", "Konsep serta anggaran dapat disesuaikan dengan kebijakan perusahaan."]
+    },
+    {
+      "slug": "reservasi-hotel",
+      "title": "Reservasi Hotel",
+      "shortTitle": "Reservasi Hotel",
+      "badge": "Stay Easy",
+      "heroImage": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=2200&q=85",
+      "summary": "Reservasi hotel domestik dan internasional untuk individu, keluarga, grup wisata, jamaah, maupun kebutuhan perjalanan bisnis.",
+      "startingPrice": "Sesuai pilihan hotel",
+      "responseTime": "Maks. 2 jam",
+      "clients": "1-300 kamar",
+      "gallery": [
+        "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=900&q=80"
+      ],
+      "benefits": ["Pilihan hotel luas", "Harga grup kompetitif", "Konfirmasi reservasi jelas", "Permintaan kamar khusus", "Bantuan perubahan jadwal", "Dukungan selama menginap"],
+      "scope": ["Hotel domestik dan internasional", "Reservasi individu dan grup", "Kamar twin, triple, dan family", "Meeting room dan paket makan", "Airport transfer", "Long stay korporat"],
+      "process": ["Kirim kota, tanggal, dan jumlah tamu", "Pilih rekomendasi hotel", "Konfirmasi tipe kamar dan fasilitas", "Pembayaran reservasi", "Voucher hotel diterbitkan"],
+      "faq": ["Kebijakan pembatalan mengikuti masing-masing hotel.", "Permintaan connecting room bergantung pada ketersediaan saat check-in."]
+    },
+    {
+      "slug": "visa",
+      "title": "Pengurusan Visa",
+      "shortTitle": "Visa",
+      "badge": "Document Assistance",
+      "heroImage": "https://images.unsplash.com/photo-1540126034813-121bf29033d2?auto=format&fit=crop&w=2200&q=85",
+      "summary": "Pendampingan pengurusan visa wisata dan bisnis dengan pemeriksaan dokumen, informasi persyaratan, serta pemantauan proses aplikasi.",
+      "startingPrice": "Mulai Rp750.000",
+      "responseTime": "1 hari kerja",
+      "clients": "Individu & grup",
+      "gallery": [
+        "https://images.unsplash.com/photo-1540126034813-121bf29033d2?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1527631746610-bca00a040d60?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1452421822248-d4c2b47f0c81?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=900&q=80"
+      ],
+      "benefits": ["Checklist dokumen terarah", "Pemeriksaan berkas sebelum submit", "Bantuan pengisian formulir", "Simulasi wawancara bila diperlukan", "Pemantauan status aplikasi", "Konsultasi tujuan perjalanan"],
+      "scope": ["Visa wisata", "Visa bisnis", "Visa grup perjalanan", "Surat sponsor dan itinerary", "Asuransi perjalanan", "Terjemahan dokumen pendukung"],
+      "process": ["Konsultasi negara dan tujuan kunjungan", "Pemeriksaan persyaratan dokumen", "Pelengkapan formulir dan jadwal biometrik", "Pengajuan aplikasi", "Pemantauan hingga paspor dikembalikan"],
+      "faq": ["Keputusan visa sepenuhnya menjadi kewenangan kedutaan.", "Waktu proses berbeda untuk setiap negara dan periode pengajuan."]
+    }
+  ]
+}

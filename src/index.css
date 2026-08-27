@@ -1,0 +1,96 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --color-primary: #a60c1d;
+  --color-secondary: #fec627;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  font-family: var(--font-sans);
+}
+
+img {
+  max-width: 100%;
+}
+
+.google-review-track {
+  animation: google-review-scroll 38s linear infinite;
+  will-change: transform;
+}
+
+.google-review-track:hover {
+  animation-play-state: paused;
+}
+
+.client-logo-viewport {
+  -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+}
+
+.client-logo-track {
+  animation: client-logo-scroll 30s linear infinite;
+  will-change: transform;
+}
+
+.client-logo-track:hover {
+  animation-play-state: paused;
+}
+
+.tour-journey-carousel {
+  scrollbar-width: none;
+}
+
+.tour-journey-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.tour-package-carousel {
+  scrollbar-width: none;
+}
+
+.tour-package-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.tour-search-tabs {
+  scrollbar-width: none;
+}
+
+.tour-search-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.search-results-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+}
+
+@keyframes google-review-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes client-logo-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .google-review-track {
+    animation: none;
+  }
+
+  .client-logo-track {
+    animation: none;
+  }
+}

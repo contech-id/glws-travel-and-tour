@@ -1,0 +1,158 @@
+{
+  "categories": ["Semua", "Destinasi Indonesia", "International", "Travel Tips", "Kuliner", "Adventure", "Family Travel", "Corporate Travel"],
+  "trendingTopics": ["Bali", "Jepang", "Eropa", "Koper Kabin", "Visa", "Road Trip", "Kuliner Lokal", "Liburan Keluarga", "Kapal Pesiar", "Hidden Gem", "Travel Budget", "Hotel", "Itinerary", "Corporate Gathering"],
+  "articles": [
+    {
+      "slug": "itinerary-bali-lima-hari",
+      "title": "Itinerary Bali 5 Hari yang Seimbang",
+      "excerpt": "Rute praktis untuk menikmati budaya, pantai, kuliner, dan waktu santai tanpa jadwal yang terlalu padat.",
+      "category": "Destinasi Indonesia",
+      "type": "Panduan",
+      "author": "Tim PT. Ganes Lancar",
+      "date": "18 Agustus 2026",
+      "views": "6.240 views",
+      "image": "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1600&q=85",
+      "tags": ["bali", "itinerary", "wisata-indonesia"],
+      "highlights": ["Hari pertama fokus pada adaptasi dan sunset", "Gabungkan destinasi yang berada dalam satu kawasan", "Sisakan satu hari untuk aktivitas fleksibel"],
+      "body": [
+        "Bali menawarkan banyak pengalaman dalam jarak yang relatif dekat, tetapi mencoba mengunjungi semuanya dalam satu perjalanan justru membuat liburan terasa melelahkan. Itinerary lima hari sebaiknya dibangun berdasarkan kawasan agar waktu tidak habis di jalan.",
+        "Hari pertama dapat diisi dengan check-in, menikmati area sekitar hotel, lalu mengejar matahari terbenam di Tanah Lot atau pantai selatan. Hari kedua cocok untuk Ubud, Tegallalang, dan pasar seni, sedangkan hari ketiga dapat diarahkan ke Uluwatu serta pantai di kawasan selatan.",
+        "Gunakan hari keempat untuk pengalaman yang paling sesuai dengan karakter perjalanan, seperti kelas memasak, snorkeling, spa, atau menjelajah Nusa Penida. Pilihan ini memberi ruang bagi pasangan, keluarga, maupun grup untuk menikmati Bali dengan cara berbeda.",
+        "Sebelum pulang, sisakan waktu untuk sarapan santai dan membeli oleh-oleh. Tim PT. Ganes Lancar menyarankan memilih hotel yang sesuai pusat aktivitas agar perpindahan lebih efisien dan biaya transportasi tetap terkendali."
+      ]
+    },
+    {
+      "slug": "hidden-gem-jepang-selain-tokyo",
+      "title": "Hidden Gem Jepang Selain Tokyo dan Osaka",
+      "excerpt": "Kota kecil, desa tradisional, dan lanskap tenang untuk perjalanan Jepang yang lebih personal.",
+      "category": "International",
+      "type": "Inspirasi",
+      "author": "Nadia Pratama",
+      "date": "14 Agustus 2026",
+      "views": "4.870 views",
+      "image": "https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&w=1600&q=85",
+      "tags": ["jepang", "hidden-gem", "international"],
+      "highlights": ["Kanazawa untuk seni dan distrik bersejarah", "Takayama untuk suasana pegunungan", "Kurashiki untuk kanal dan bangunan tradisional"],
+      "body": [
+        "Tokyo, Kyoto, dan Osaka memang menjadi pintu masuk populer, tetapi Jepang memiliki banyak kota kecil yang menawarkan pengalaman lebih tenang. Destinasi alternatif juga cocok bagi wisatawan yang sudah pernah mengunjungi rute klasik.",
+        "Kanazawa memiliki taman Kenrokuen, museum seni kontemporer, serta kawasan kediaman samurai. Takayama menghadirkan jalan tua, pasar pagi, dan akses menuju Shirakawa-go. Sementara itu, Kurashiki dikenal dengan kanal cantik dan gudang tradisional yang kini menjadi galeri serta kafe.",
+        "Perjalanan antarkota dapat memanfaatkan kereta regional dan bus. Periksa cakupan rail pass sebelum membeli karena tidak semua rute membutuhkan pass nasional yang lebih mahal.",
+        "Waktu terbaik bergantung pada suasana yang dicari. Musim semi dan gugur nyaman untuk berjalan kaki, sedangkan musim dingin menawarkan panorama bersalju yang dramatis di kawasan pegunungan."
+      ]
+    },
+    {
+      "slug": "cara-packing-koper-kabin",
+      "title": "Cara Packing Koper Kabin untuk Perjalanan 7 Hari",
+      "excerpt": "Teknik memilih pakaian, perlengkapan penting, dan ruang cadangan agar koper tetap ringan.",
+      "category": "Travel Tips",
+      "type": "Tips",
+      "author": "Rizky Maulana",
+      "date": "10 Agustus 2026",
+      "views": "8.120 views",
+      "image": "https://images.unsplash.com/photo-1553531384-cc64ac80f931?auto=format&fit=crop&w=1600&q=85",
+      "tags": ["packing", "koper-kabin", "travel-tips"],
+      "highlights": ["Gunakan palet warna yang mudah dipadukan", "Pindahkan cairan ke wadah kecil", "Kenakan barang paling berat saat terbang"],
+      "body": [
+        "Koper kabin cukup untuk perjalanan tujuh hari apabila isi dipilih berdasarkan fungsi. Mulailah dari daftar aktivitas, cuaca destinasi, serta akses laundry di hotel atau sekitar tempat menginap.",
+        "Pilih pakaian dengan warna netral yang dapat dipadukan ulang. Tiga atasan, dua bawahan, satu lapisan luar, pakaian tidur, dan pakaian dalam yang cukup biasanya menjadi dasar yang efisien. Gunakan packing cube untuk memisahkan jenis barang.",
+        "Perlengkapan mandi sebaiknya dipindahkan ke wadah travel size dan disimpan dalam kantong transparan. Simpan obat, dokumen, perangkat elektronik, serta satu set pakaian cadangan di bagian yang mudah dijangkau.",
+        "Timbang koper sebelum berangkat dan periksa aturan maskapai karena ukuran serta berat kabin berbeda. Sisakan sedikit ruang untuk oleh-oleh dan hindari membawa barang yang mudah ditemukan di destinasi."
+      ]
+    },
+    {
+      "slug": "road-trip-new-zealand-south-island",
+      "title": "Road Trip South Island Selandia Baru",
+      "excerpt": "Rute pegunungan, danau, dan kota kecil untuk perjalanan darat selama sepuluh hari.",
+      "category": "Adventure",
+      "type": "Panduan",
+      "author": "Aldo Wijaya",
+      "date": "6 Agustus 2026",
+      "views": "3.950 views",
+      "image": "https://images.unsplash.com/photo-1469521669194-babb45599def?auto=format&fit=crop&w=1600&q=85",
+      "tags": ["new-zealand", "road-trip", "adventure"],
+      "highlights": ["Mulai dari Christchurch dan berakhir di Queenstown", "Berhenti di Lake Tekapo dan Mount Cook", "Sediakan waktu cadangan untuk perubahan cuaca"],
+      "body": [
+        "South Island cocok untuk road trip karena jalan antarkota menyuguhkan pemandangan yang terus berubah. Rute sepuluh hari dapat dimulai dari Christchurch, melewati Lake Tekapo, Mount Cook, Wanaka, Queenstown, dan berakhir di Milford Sound.",
+        "Jarak di peta terlihat pendek, tetapi banyak titik foto dan jalur jalan kaki yang membuat waktu perjalanan bertambah. Batasi durasi mengemudi harian agar perjalanan tetap aman dan memberi ruang untuk berhenti spontan.",
+        "Cuaca pegunungan dapat berubah dengan cepat. Bawa pakaian berlapis, periksa kondisi jalan, dan jangan memaksakan rute ketika ada peringatan angin atau salju.",
+        "Sewa kendaraan dengan perlindungan yang memadai dan pahami aturan berkendara di sisi kiri. Untuk musim ramai, akomodasi serta aktivitas populer sebaiknya dipesan beberapa bulan sebelumnya."
+      ]
+    },
+    {
+      "slug": "wisata-kuliner-istanbul",
+      "title": "Wisata Kuliner Istanbul dari Pagi hingga Malam",
+      "excerpt": "Roti hangat, kebab, pasar rempah, dan hidangan rumahan yang wajib masuk daftar perjalanan.",
+      "category": "Kuliner",
+      "type": "Rute Kuliner",
+      "author": "Siti Rahmawati",
+      "date": "1 Agustus 2026",
+      "views": "5.340 views",
+      "image": "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=1600&q=85",
+      "tags": ["istanbul", "kuliner", "turki"],
+      "highlights": ["Mulai hari dengan sarapan khas Turki", "Cicipi jajanan di sekitar Eminonu", "Tutup malam dengan hidangan meze"],
+      "body": [
+        "Istanbul adalah kota yang dapat dinikmati melalui rasa. Sarapan tradisional Turki biasanya terdiri dari roti, keju, zaitun, telur, madu, dan teh hangat yang cocok menjadi awal sebelum menjelajah kota.",
+        "Kawasan Eminonu menawarkan balik ekmek, simit, kestanye panggang, dan beragam manisan. Pasar Rempah juga menarik untuk mengenal teh, lokum, kacang, serta bumbu yang digunakan dalam masakan lokal.",
+        "Saat makan siang, coba lokanta atau rumah makan rumahan yang menyajikan hidangan harian. Pilih tempat yang ramai dikunjungi warga lokal dan perhatikan daftar harga sebelum memesan.",
+        "Malam hari dapat ditutup dengan meze, kebab, atau hidangan ikan di sekitar Bosphorus. Sisakan ruang untuk baklava dan kopi Turki sebagai penutup perjalanan kuliner."
+      ]
+    },
+    {
+      "slug": "liburan-keluarga-singapura",
+      "title": "Liburan Keluarga ke Singapura Tanpa Terburu-buru",
+      "excerpt": "Pilihan kawasan, transportasi, dan aktivitas yang nyaman untuk anak maupun orang tua.",
+      "category": "Family Travel",
+      "type": "Panduan Keluarga",
+      "author": "Maya Anindita",
+      "date": "27 Juli 2026",
+      "views": "7.010 views",
+      "image": "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=1600&q=85",
+      "tags": ["singapura", "family-travel", "anak"],
+      "highlights": ["Pilih satu kawasan utama setiap hari", "Manfaatkan MRT dan stroller ringan", "Sediakan jeda pada siang hari"],
+      "body": [
+        "Singapura mudah dijelajahi bersama keluarga karena transportasi publiknya teratur dan fasilitas umum cukup lengkap. Kunci perjalanan yang nyaman adalah membatasi jumlah tujuan setiap hari.",
+        "Gardens by the Bay, Singapore Zoo, Sentosa, dan kawasan Marina Bay dapat dibagi ke hari berbeda. Anak-anak memiliki waktu menikmati aktivitas, sementara orang tua tidak perlu berpindah terlalu sering.",
+        "Pilih hotel dekat stasiun MRT dan pusat makanan. Stroller ringan membantu untuk anak kecil, tetapi perhatikan jam sibuk agar perjalanan dengan kereta tetap nyaman.",
+        "Cuaca yang panas dan lembap membuat jeda siang penting. Kembali ke hotel atau pilih aktivitas dalam ruang sebelum melanjutkan perjalanan sore dan malam."
+      ]
+    },
+    {
+      "slug": "panduan-kapal-pesiar-pertama",
+      "title": "Panduan Naik Kapal Pesiar untuk Pertama Kali",
+      "excerpt": "Memahami kabin, waktu embarkasi, fasilitas kapal, dan biaya tambahan sebelum berlayar.",
+      "category": "International",
+      "type": "Panduan",
+      "author": "Tim PT. Ganes Lancar",
+      "date": "20 Juli 2026",
+      "views": "4.420 views",
+      "image": "https://images.unsplash.com/photo-1548574505-5e239809ee19?auto=format&fit=crop&w=1600&q=85",
+      "tags": ["kapal-pesiar", "cruise", "international"],
+      "highlights": ["Tiba di pelabuhan sesuai slot embarkasi", "Pelajari fasilitas yang sudah termasuk", "Bawa tas kecil untuk kebutuhan hari pertama"],
+      "body": [
+        "Kapal pesiar menggabungkan hotel, transportasi, restoran, dan hiburan dalam satu perjalanan. Sebelum memesan, pahami perbedaan kabin interior, ocean view, balkon, serta suite agar pilihan sesuai kebutuhan dan anggaran.",
+        "Pada hari keberangkatan, bagasi besar biasanya diserahkan kepada petugas dan baru tiba di kabin beberapa jam kemudian. Simpan dokumen, obat, pakaian renang, dan barang penting dalam tas kecil yang dibawa sendiri.",
+        "Makanan utama dan sebagian hiburan umumnya sudah termasuk, sedangkan restoran khusus, minuman premium, internet, dan aktivitas tertentu dapat dikenakan biaya tambahan. Gunakan aplikasi kapal untuk memeriksa jadwal serta reservasi.",
+        "Saat kapal singgah, perhatikan waktu kembali karena kapal tidak menunggu peserta yang terlambat. Tur resmi kapal lebih praktis, sementara eksplorasi mandiri memberi fleksibilitas lebih besar."
+      ]
+    },
+    {
+      "slug": "merancang-corporate-gathering",
+      "title": "Merancang Corporate Gathering yang Berkesan",
+      "excerpt": "Langkah menyusun tujuan, aktivitas, venue, dan alur acara agar peserta tetap terlibat.",
+      "category": "Corporate Travel",
+      "type": "Insight",
+      "author": "Corporate Team PT. Ganes Lancar",
+      "date": "15 Juli 2026",
+      "views": "2.780 views",
+      "image": "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1600&q=85",
+      "tags": ["corporate", "gathering", "mice"],
+      "highlights": ["Tentukan tujuan yang dapat diukur", "Pilih aktivitas sesuai profil peserta", "Seimbangkan agenda formal dan waktu bebas"],
+      "body": [
+        "Corporate gathering yang efektif bukan sekadar memindahkan aktivitas kantor ke destinasi lain. Acara perlu memiliki tujuan yang jelas, seperti memperkuat kolaborasi, memberi penghargaan, atau menyatukan tim setelah perubahan organisasi.",
+        "Profil peserta menentukan pilihan destinasi, durasi, aktivitas, dan tingkat kenyamanan. Survei sederhana membantu mengetahui kebutuhan makanan, kondisi fisik, serta preferensi kamar sebelum rencana dikunci.",
+        "Agenda sebaiknya menggabungkan sesi utama, aktivitas kolaboratif, pengalaman lokal, dan waktu bebas. Jadwal yang terlalu padat membuat peserta kehilangan kesempatan membangun hubungan secara alami.",
+        "Tim PT. Ganes Lancar dapat membantu menyusun konsep, venue, transportasi, akomodasi, produksi acara, serta evaluasi agar setiap bagian perjalanan berada dalam satu koordinasi."
+      ]
+    }
+  ]
+}

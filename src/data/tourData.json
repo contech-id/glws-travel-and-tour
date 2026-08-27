@@ -1,0 +1,248 @@
+{
+  "categories": [
+    {
+      "slug": "wisata-dalam-negeri",
+      "title": "Wisata Dalam Negeri",
+      "shortTitle": "Dalam Negeri",
+      "description": "Jelajahi kekayaan alam, budaya, dan kuliner terbaik Indonesia dengan itinerary yang nyaman untuk keluarga maupun rombongan.",
+      "heroImage": "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=2200&q=85",
+      "highlights": ["Destinasi pilihan Nusantara", "Pemandu lokal berpengalaman", "Jadwal fleksibel dan nyaman"]
+    },
+    {
+      "slug": "wisata-luar-negeri",
+      "title": "Wisata Luar Negeri",
+      "shortTitle": "Luar Negeri",
+      "description": "Temukan kota ikonik dan lanskap dunia melalui paket perjalanan terarah, akomodasi terpilih, dan pendampingan lengkap.",
+      "heroImage": "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=2200&q=85",
+      "highlights": ["Rute internasional populer", "Bantuan visa dan dokumen", "Tour leader dari Indonesia"]
+    },
+    {
+      "slug": "wisata-religi",
+      "title": "Wisata Religi",
+      "shortTitle": "Wisata Religi",
+      "description": "Perjalanan penuh makna ke destinasi sejarah Islam dengan layanan ramah Muslim dan pendamping yang memahami kebutuhan ibadah.",
+      "heroImage": "https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=2200&q=85",
+      "highlights": ["Itinerary ramah waktu ibadah", "Kuliner halal terkurasi", "Pendamping perjalanan Muslim"]
+    },
+    {
+      "slug": "wisata-kapal-pesiar",
+      "title": "Wisata Kapal Pesiar",
+      "shortTitle": "Kapal Pesiar",
+      "description": "Nikmati pengalaman berlayar premium dengan kabin nyaman, hiburan lengkap, dan persinggahan di berbagai kota menawan.",
+      "heroImage": "https://images.unsplash.com/photo-1548574505-5e239809ee19?auto=format&fit=crop&w=2200&q=85",
+      "highlights": ["Kabin dan fasilitas premium", "Beragam kota dalam satu perjalanan", "Aktivitas keluarga di atas kapal"]
+    }
+  ],
+  "packages": [
+    {
+      "slug": "eksotisme-bali-4d3n",
+      "categorySlug": "wisata-dalam-negeri",
+      "image": "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1200&q=85",
+      "badge": "Paling Favorit",
+      "title": "Eksotisme Bali 4D3N",
+      "category": "Wisata Dalam Negeri",
+      "location": "Bali, Indonesia",
+      "duration": "4 Hari 3 Malam",
+      "capacity": "20 Orang",
+      "price": "Rp4.850.000",
+      "departure": "12 September 2026",
+      "description": "Jelajahi pura ikonik, pantai terbaik, dan budaya Bali dalam satu perjalanan.",
+      "overview": "Paket ringkas untuk menikmati sisi budaya dan alam Bali. Perjalanan mencakup Ubud, Tanah Lot, Uluwatu, dan waktu santai di pantai selatan dengan transportasi serta pemandu lokal.",
+      "gallery": [
+        "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1539367628448-4bc5c9d171c8?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1533669955142-6a73332af4db?auto=format&fit=crop&w=900&q=80"
+      ],
+      "facilities": ["Hotel bintang 4", "Sarapan dan makan sesuai program", "Transportasi ber-AC", "Tiket objek wisata", "Pemandu lokal", "Dokumentasi perjalanan"],
+      "itinerary": ["Tiba di Bali dan sunset Tanah Lot", "Ubud, Tegallalang, dan pasar seni", "Pantai Pandawa dan pertunjukan Kecak Uluwatu", "Belanja oleh-oleh dan perjalanan pulang"],
+      "hotel": "Hotel area Kuta atau setara, kamar twin sharing.",
+      "flight": "Tiket pesawat belum termasuk dan dapat ditambahkan sesuai kota keberangkatan.",
+      "faq": [
+        {
+          "question": "Apakah ada minimum jumlah peserta?",
+          "answer": "Harga paket berlaku untuk minimum 15 peserta. Tim kami akan menginformasikan penyesuaian apabila jumlah peserta belum terpenuhi."
+        },
+        {
+          "question": "Apakah itinerary perjalanan dapat berubah?",
+          "answer": "Jadwal dapat menyesuaikan kondisi cuaca, lalu lintas, dan kebijakan destinasi tanpa mengurangi tujuan utama perjalanan."
+        }
+      ]
+    },
+    {
+      "slug": "santorini-escape-6d5n",
+      "categorySlug": "wisata-luar-negeri",
+      "image": "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=1200&q=85",
+      "badge": "Pilihan Premium",
+      "title": "Santorini Escape 6D5N",
+      "category": "Wisata Luar Negeri",
+      "location": "Santorini, Yunani",
+      "duration": "6 Hari 5 Malam",
+      "capacity": "16 Orang",
+      "price": "Rp24.900.000",
+      "departure": "18 Oktober 2026",
+      "description": "Nikmati panorama Aegean, desa bercat putih, dan matahari terbenam Santorini.",
+      "overview": "Perjalanan premium ke Athena dan Santorini dengan ritme santai. Nikmati arsitektur klasik, desa Oia, pesisir Aegean, serta pengalaman kuliner lokal pilihan.",
+      "gallery": [
+        "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1504512485720-7d83a16ee930?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1603565816030-6b389eeb23cb?auto=format&fit=crop&w=900&q=80"
+      ],
+      "facilities": ["Hotel bintang 4", "Penerbangan domestik Yunani", "Sarapan harian", "Ferry antarpulau", "Tour leader", "Asuransi perjalanan"],
+      "itinerary": ["Penerbangan menuju Athena", "City tour Athena dan Acropolis", "Ferry menuju Santorini", "Eksplorasi Fira dan Oia", "Hari bebas di Santorini", "Kembali ke Indonesia"],
+      "hotel": "Hotel bintang 4 di Athena dan Santorini, kamar twin sharing.",
+      "flight": "Termasuk penerbangan ekonomi Jakarta-Athena pulang pergi sesuai grup.",
+      "faq": [
+        {
+          "question": "Apakah pengurusan visa Schengen dibantu?",
+          "answer": "Ya. Tim dokumen kami akan memberikan daftar persyaratan, memeriksa berkas, dan mendampingi proses pengajuan visa Schengen."
+        },
+        {
+          "question": "Apakah harga paket dapat berubah?",
+          "answer": "Harga dapat menyesuaikan ketersediaan tiket internasional, nilai tukar, dan periode keberangkatan. Perubahan akan dikonfirmasi sebelum pemesanan."
+        }
+      ]
+    },
+    {
+      "slug": "maldives-romantic-5d4n",
+      "categorySlug": "wisata-luar-negeri",
+      "image": "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=1200&q=85",
+      "badge": "Honeymoon",
+      "title": "Maldives Romantic 5D4N",
+      "category": "Wisata Luar Negeri",
+      "location": "Maldives",
+      "duration": "5 Hari 4 Malam",
+      "capacity": "2 Orang",
+      "price": "Rp18.750.000",
+      "departure": "Setiap Minggu",
+      "description": "Paket romantis dengan resort tepi laut dan pengalaman tropis yang berkesan.",
+      "overview": "Liburan privat untuk pasangan dengan kombinasi beach villa dan water villa, makan lengkap, transfer speedboat, serta aktivitas laut yang dapat dipilih sesuai suasana.",
+      "gallery": [
+        "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1573843981267-be1999ff37cd?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1540202404-a2f29016b523?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&w=900&q=80"
+      ],
+      "facilities": ["Beach dan water villa", "Full board meal", "Transfer speedboat", "Honeymoon setup", "Snorkeling gear", "Dokumentasi pasangan"],
+      "itinerary": ["Tiba di Male dan transfer resort", "Aktivitas santai dan snorkeling", "Pindah ke water villa", "Hari bebas dan romantic dinner", "Transfer bandara dan pulang"],
+      "hotel": "Resort bintang 4 pilihan dengan 2 malam beach villa dan 2 malam water villa.",
+      "flight": "Tiket internasional dapat ditambahkan dari Jakarta atau kota pilihan.",
+      "faq": [
+        {
+          "question": "Untuk berapa orang harga paket ini berlaku?",
+          "answer": "Harga paket berlaku untuk dua orang dewasa dengan penggunaan satu kamar. Pilihan untuk keluarga dapat disesuaikan melalui konsultasi."
+        },
+        {
+          "question": "Apakah seluruh aktivitas laut selalu tersedia?",
+          "answer": "Aktivitas laut bergantung pada kondisi cuaca dan kebijakan operator setempat demi menjaga keamanan seluruh peserta."
+        }
+      ]
+    },
+    {
+      "slug": "machu-picchu-7d6n",
+      "categorySlug": "wisata-luar-negeri",
+      "image": "https://images.unsplash.com/photo-1526392060635-9d6019884377?auto=format&fit=crop&w=1200&q=85",
+      "badge": "Petualangan",
+      "title": "Machu Picchu 7D6N",
+      "category": "Wisata Luar Negeri",
+      "location": "Cusco, Peru",
+      "duration": "7 Hari 6 Malam",
+      "capacity": "14 Orang",
+      "price": "Rp29.500.000",
+      "departure": "6 November 2026",
+      "description": "Telusuri warisan Inca dan lanskap pegunungan menakjubkan di Machu Picchu.",
+      "overview": "Petualangan budaya menuju Cusco, Sacred Valley, dan Machu Picchu dengan waktu aklimatisasi yang cukup, kereta panorama, serta pemandu lokal berlisensi.",
+      "gallery": [
+        "https://images.unsplash.com/photo-1526392060635-9d6019884377?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1587595431973-160d0d94add1?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1543385426-191664295b58?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1531968455001-5c5272a41129?auto=format&fit=crop&w=900&q=80"
+      ],
+      "facilities": ["Hotel bintang 4", "Kereta panorama", "Tiket Machu Picchu", "Transportasi privat", "Pemandu lokal", "Perlengkapan P3K"],
+      "itinerary": ["Tiba di Lima", "Penerbangan ke Cusco dan aklimatisasi", "Sacred Valley", "Kereta menuju Aguas Calientes", "Machu Picchu", "Kembali ke Lima", "Penerbangan pulang"],
+      "hotel": "Hotel nyaman di Lima, Cusco, dan Aguas Calientes.",
+      "flight": "Termasuk penerbangan domestik Peru, belum termasuk penerbangan internasional.",
+      "faq": [
+        {
+          "question": "Apakah perjalanan ini membutuhkan kondisi fisik tertentu?",
+          "answer": "Peserta disarankan memiliki kondisi fisik yang baik karena perjalanan mencakup aktivitas berjalan kaki dan medan yang cukup menantang."
+        },
+        {
+          "question": "Bagaimana mengantisipasi ketinggian destinasi?",
+          "answer": "Itinerary menyediakan waktu adaptasi. Peserta dengan kondisi kesehatan tertentu disarankan berkonsultasi dengan dokter sebelum berangkat."
+        }
+      ]
+    },
+    {
+      "slug": "cappadocia-muslim-tour-6d5n",
+      "categorySlug": "wisata-religi",
+      "image": "https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=1200&q=85",
+      "badge": "Muslim Friendly",
+      "title": "Cappadocia Muslim Tour 6D5N",
+      "category": "Wisata Religi",
+      "location": "Istanbul dan Cappadocia, Turki",
+      "duration": "6 Hari 5 Malam",
+      "capacity": "24 Orang",
+      "price": "Rp21.800.000",
+      "departure": "24 Desember 2026",
+      "description": "Eksplorasi Turki yang nyaman dengan destinasi dan layanan ramah Muslim.",
+      "overview": "Jelajahi warisan Islam di Istanbul dan bentang alam Cappadocia. Jadwal disusun ramah waktu ibadah dengan pilihan makanan halal serta pendamping Muslim berpengalaman.",
+      "gallery": [
+        "https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1641128324972-af3212f0f6bd?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1570939274717-7eda259b50ed?auto=format&fit=crop&w=900&q=80"
+      ],
+      "facilities": ["Hotel bintang 4", "Makanan halal", "Bus wisata", "Tiket destinasi", "Tour leader Muslim", "Air mineral harian"],
+      "itinerary": ["Penerbangan menuju Istanbul", "Masjid Biru dan Hagia Sophia", "Bosphorus dan pasar tradisional", "Penerbangan ke Cappadocia", "Cappadocia dan optional balon udara", "Kembali ke Indonesia"],
+      "hotel": "Hotel bintang 4 dekat pusat kota Istanbul dan cave hotel Cappadocia.",
+      "flight": "Termasuk tiket ekonomi Jakarta-Istanbul dan penerbangan domestik Turki.",
+      "faq": [
+        {
+          "question": "Apakah aktivitas balon udara sudah termasuk?",
+          "answer": "Aktivitas balon udara bersifat opsional, memerlukan biaya tambahan, dan pelaksanaannya mengikuti kondisi cuaca pada hari keberangkatan."
+        },
+        {
+          "question": "Apakah jadwal perjalanan ramah waktu ibadah?",
+          "answer": "Ya. Waktu salat dan akses ke tempat ibadah menjadi pertimbangan dalam penyusunan itinerary harian."
+        }
+      ]
+    },
+    {
+      "slug": "singapore-cruise-4d3n",
+      "categorySlug": "wisata-kapal-pesiar",
+      "image": "https://images.unsplash.com/photo-1548574505-5e239809ee19?auto=format&fit=crop&w=1200&q=85",
+      "badge": "Cruise Experience",
+      "title": "Singapore Cruise 4D3N",
+      "category": "Wisata Kapal Pesiar",
+      "location": "Singapore dan Penang",
+      "duration": "4 Hari 3 Malam",
+      "capacity": "30 Orang",
+      "price": "Rp12.900.000",
+      "departure": "7 Januari 2027",
+      "description": "Nikmati pelayaran modern dengan fasilitas lengkap dan singgah di Penang.",
+      "overview": "Pengalaman kapal pesiar untuk keluarga dari Singapura menuju Penang. Paket mencakup kabin, makan, hiburan kapal, dan pendampingan sejak check-in hingga kepulangan.",
+      "gallery": [
+        "https://images.unsplash.com/photo-1548574505-5e239809ee19?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1566847438217-76e82d383f84?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1528150177508-7cc0c36cda5c?auto=format&fit=crop&w=900&q=80"
+      ],
+      "facilities": ["Kabin ocean view", "Makan di kapal", "Pertunjukan hiburan", "Kolam renang", "Pendamping grup", "Port charges"],
+      "itinerary": ["Tiba di Singapura dan check-in kapal", "Aktivitas penuh di kapal", "Eksplorasi Penang", "Kembali ke Singapura dan pulang"],
+      "hotel": "Kabin ocean view twin sharing selama pelayaran.",
+      "flight": "Termasuk tiket ekonomi Jakarta-Singapura pulang pergi.",
+      "faq": [
+        {
+          "question": "Berapa lama masa berlaku paspor yang diperlukan?",
+          "answer": "Paspor harus berlaku minimal enam bulan sejak tanggal kepulangan dan memiliki halaman kosong yang mencukupi."
+        },
+        {
+          "question": "Apakah semua aktivitas di kapal sudah termasuk?",
+          "answer": "Fasilitas utama kapal sudah termasuk, sedangkan restoran khusus, spa, dan sebagian aktivitas premium dapat dikenakan biaya tambahan."
+        }
+      ]
+    }
+  ]
+}
