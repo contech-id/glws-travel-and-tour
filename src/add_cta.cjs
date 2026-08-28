@@ -38,7 +38,7 @@ function CTASection() {
                 Konsultasi Gratis <ArrowRight size={16} />
               </a>
               <a
-                href="https://wa.me/6281959594529"
+                href="https://wa.me/6281330663930"
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#25d366] px-8 text-sm font-bold text-white transition-transform hover:scale-105 hover:bg-[#20bd5a] sm:w-auto shadow-lg"

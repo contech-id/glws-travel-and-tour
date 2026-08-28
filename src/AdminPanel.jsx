@@ -16,6 +16,8 @@ import {
 } from 'lucide-react'
 import tourData from './data/tourData.json'
 import articleData from './data/articleData.json'
+import tourListData from './data/tourListData.json'
+import { api, getApiError } from './api'
 
 /* ─── LocalStorage helpers ─── */
 const LS_PACKAGES_KEY = 'glws_admin_packages'
@@ -65,6 +67,30 @@ function toSlug(text) {
     .trim()
 }
 
+async function syncDummyData() {
+  const [packages, articles, tours] = await Promise.all([
+    api.list('tour-packages'), api.list('articles'), api.list('tours'),
+  ])
+  let savedPackages = packages
+  if (!packages.length) {
+    savedPackages = []
+    for (const item of tourData.packages) savedPackages.push(await api.create('tour-packages', item))
+  }
+  if (!articles.length) {
+    const monthMap = { Januari: '01', Februari: '02', Maret: '03', April: '04', Mei: '05', Juni: '06', Juli: '07', Agustus: '08', September: '09', Oktober: '10', November: '11', Desember: '12' }
+    for (const item of articleData.articles) {
+      const [, day, month, year] = item.date.match(/(\d{1,2})\s+(\S+)\s+(\d{4})/) || []
+      await api.create('articles', { ...item, publishedAt: day ? `${year}-${monthMap[month] || '01'}-${day.padStart(2, '0')}` : undefined, views: Number(String(item.views).replace(/\D/g, '')) || 0, isPublished: true })
+    }
+  }
+  if (!tours.length) {
+    for (const item of savedPackages) {
+      await api.create('tours', { tourPackageId: item.id, slug: `${item.slug}-tour`, title: item.title, location: item.location, duration: item.duration, capacity: Number(String(item.capacity).replace(/\D/g, '')) || undefined, price: Number(String(item.price).replace(/\D/g, '')) || undefined, image: item.image, description: item.description, itinerary: item.itinerary || [], status: 'published' })
+    }
+  }
+  window.dispatchEvent(new Event('glws-api-updated'))
+}
+
 /* ══════════════════════════════════════════════════
    AdminLoginPage
    ══════════════════════════════════════════════════ */
@@ -74,20 +100,11 @@ export function AdminLoginPage({ onLogin }) {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
     setError('')
-
-    setTimeout(() => {
-      if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-        localStorage.setItem(LS_AUTH_KEY, 'true')
-        onLogin()
-      } else {
-        setError('Email atau password salah. Silakan coba lagi.')
-      }
-      setLoading(false)
-    }, 600)
+    try { await api.login(email, password); await syncDummyData().catch(() => {}); onLogin() } catch (error) { setError(getApiError(error)) } finally { setLoading(false) }
   }
 
   return (
@@ -155,6 +172,7 @@ export function AdminLayout({ currentSection, onNavigate, onLogout, children }) 
 
   const menuItems = [
     { id: 'admin-packages', label: 'Kelola Paket', icon: Package, href: '/admin/packages' },
+    { id: 'admin-tours', label: 'Kelola Tour', icon: ArrowRight, href: '/admin/tours' },
     { id: 'admin-articles', label: 'Kelola Artikel', icon: FileText, href: '/admin/articles' },
   ]
 
@@ -226,7 +244,7 @@ export function AdminLayout({ currentSection, onNavigate, onLogout, children }) 
             <Menu size={20} />
           </button>
           <div className="text-sm font-bold text-[#172433]">
-            {currentSection === 'admin-packages' ? 'Kelola Paket Wisata' : 'Kelola Artikel'}
+            {currentSection === 'admin-packages' ? 'Kelola Paket Wisata' : currentSection === 'admin-tours' ? 'Kelola Tour' : 'Kelola Artikel'}
           </div>
           <a
             className="text-xs font-medium text-primary hover:underline"
@@ -250,39 +268,36 @@ export function AdminLayout({ currentSection, onNavigate, onLogout, children }) 
    AdminPackagesPage
    ══════════════════════════════════════════════════ */
 export function AdminPackagesPage() {
-  const [packages, setPackages] = useState(loadPackages)
+  const [packages, setPackages] = useState([])
   const [editingPackage, setEditingPackage] = useState(null)
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [deleteConfirm, setDeleteConfirm] = useState(null)
+  const [error, setError] = useState('')
+
+  useEffect(() => { api.list('tour-packages').then(setPackages).catch((e) => { setPackages(tourData.packages); setError(getApiError(e)) }) }, [])
 
   const filtered = packages.filter(p =>
     p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     p.location.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const handleSave = (pkg) => {
-    let updated
-    if (editingPackage) {
-      updated = packages.map(p => p.slug === editingPackage.slug ? { ...pkg, slug: pkg.slug || editingPackage.slug } : p)
-    } else {
-      updated = [...packages, { ...pkg, slug: pkg.slug || toSlug(pkg.title) }]
-    }
-    setPackages(updated)
-    savePackages(updated)
-    setIsFormOpen(false)
-    setEditingPackage(null)
+  const handleSave = async (pkg) => {
+    try {
+      const saved = editingPackage ? await api.update('tour-packages', editingPackage.slug, pkg) : await api.create('tour-packages', pkg)
+      setPackages(current => editingPackage ? current.map(item => item.slug === editingPackage.slug ? saved : item) : [saved, ...current])
+      window.dispatchEvent(new Event('glws-api-updated'))
+      setIsFormOpen(false); setEditingPackage(null); setError('')
+    } catch (e) { setError(getApiError(e)) }
   }
 
   const handleDelete = (slug) => {
-    const updated = packages.filter(p => p.slug !== slug)
-    setPackages(updated)
-    savePackages(updated)
-    setDeleteConfirm(null)
+    api.remove('tour-packages', slug).then(() => { setPackages(current => current.filter(p => p.slug !== slug)); setDeleteConfirm(null); window.dispatchEvent(new Event('glws-api-updated')) }).catch((e) => setError(getApiError(e)))
   }
 
   return (
     <div>
+      {error && <p className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-xs text-red-600">{error}</p>}
       {/* Header */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -394,6 +409,41 @@ export function AdminPackagesPage() {
       )}
     </div>
   )
+}
+
+export function AdminToursPage() {
+  const [tours, setTours] = useState([])
+  const [packages, setPackages] = useState([])
+  const [editingTour, setEditingTour] = useState(null)
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [deleteConfirm, setDeleteConfirm] = useState(null)
+  const [error, setError] = useState('')
+  useEffect(() => { Promise.all([api.list('tours'), api.list('tour-packages')]).then(([items, packageItems]) => { setTours(items); setPackages(packageItems) }).catch((e) => { setTours(tourListData); setPackages(tourData.packages); setError(getApiError(e)) }) }, [])
+  const filtered = tours.filter((tour) => `${tour.title} ${tour.location || ''}`.toLowerCase().includes(searchTerm.toLowerCase()))
+  const handleSave = async (tour) => {
+    try {
+      const saved = editingTour ? await api.update('tours', editingTour.slug, tour) : await api.create('tours', tour)
+      setTours((current) => editingTour ? current.map((item) => item.slug === editingTour.slug ? saved : item) : [saved, ...current])
+      setIsFormOpen(false); setEditingTour(null); window.dispatchEvent(new Event('glws-api-updated'))
+    } catch (e) { setError(getApiError(e)) }
+  }
+  const handleDelete = (slug) => api.remove('tours', slug).then(() => { setTours((current) => current.filter((tour) => tour.slug !== slug)); setDeleteConfirm(null); window.dispatchEvent(new Event('glws-api-updated')) }).catch((e) => setError(getApiError(e)))
+  return <div>
+    {error && <p className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-xs text-red-600">{error}</p>}
+    <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div><h1 className="text-xl font-black text-[#172433]">Tour</h1><p className="text-xs text-[#7a8391] mt-1">{tours.length} tour tersedia</p></div><button className="inline-flex h-10 items-center gap-2 rounded-xl bg-primary px-5 text-xs font-bold text-white" onClick={() => { setEditingTour(null); setIsFormOpen(true) }}><Plus size={16} /> Tambah Tour</button></div>
+    <label className="mb-5 flex h-11 items-center gap-3 rounded-xl border border-[#e1e6eb] bg-white px-4"><Search size={16} className="text-[#93a1ae]" /><input className="w-full bg-transparent text-sm outline-none" type="search" placeholder="Cari tour..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} /></label>
+    <div className="overflow-hidden rounded-2xl border border-[#e1e6eb] bg-white shadow-sm"><div className="overflow-x-auto"><table className="w-full text-left text-sm"><thead><tr className="border-b border-[#eef1f4] bg-[#f8f9fb]"><th className="px-5 py-3.5 text-xs font-semibold text-[#5a6475]">Judul</th><th className="px-5 py-3.5 text-xs font-semibold text-[#5a6475]">Lokasi</th><th className="px-5 py-3.5 text-xs font-semibold text-[#5a6475]">Status</th><th className="px-5 py-3.5 text-xs font-semibold text-[#5a6475] text-right">Aksi</th></tr></thead><tbody className="divide-y divide-[#eef1f4]">{filtered.map((tour) => <tr key={tour.slug}><td className="px-5 py-3 font-semibold text-[#172433]">{tour.title}</td><td className="px-5 py-3 text-[#5a6475]">{tour.location}</td><td className="px-5 py-3 text-[#5a6475]">{tour.status}</td><td className="px-5 py-3"><div className="flex justify-end gap-2"><button className="grid size-8 place-items-center rounded-lg border border-[#e1e6eb]" onClick={() => { setEditingTour(tour); setIsFormOpen(true) }}><Edit3 size={14} /></button><button className="grid size-8 place-items-center rounded-lg border border-[#e1e6eb]" onClick={() => setDeleteConfirm(tour.slug)}><Trash2 size={14} /></button></div></td></tr>)}</tbody></table></div></div>
+    {isFormOpen && <TourFormModal tour={editingTour} packages={packages} onSave={handleSave} onClose={() => { setIsFormOpen(false); setEditingTour(null) }} />}
+    {deleteConfirm && <ConfirmDeleteModal title="Hapus Tour" message="Apakah Anda yakin ingin menghapus tour ini?" onConfirm={() => handleDelete(deleteConfirm)} onCancel={() => setDeleteConfirm(null)} />}
+  </div>
+}
+
+function TourFormModal({ tour, packages, onSave, onClose }) {
+  const [form, setForm] = useState({ tourPackageId: tour?.tourPackageId ?? '', title: tour?.title ?? '', location: tour?.location ?? '', duration: tour?.duration ?? '', startDate: tour?.startDate ?? '', endDate: tour?.endDate ?? '', capacity: tour?.capacity ?? '', price: tour?.price ?? '', image: tour?.image ?? '', description: tour?.description ?? '', status: tour?.status ?? 'published' })
+  const update = (key, value) => setForm((current) => ({ ...current, [key]: value }))
+  const submit = (event) => { event.preventDefault(); onSave({ ...form, slug: tour?.slug || toSlug(form.title), capacity: form.capacity ? Number(form.capacity) : undefined, price: form.price ? Number(form.price) : undefined, itinerary: tour?.itinerary || [] }) }
+  return <div className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-black/50 p-4 pt-16"><div className="w-full max-w-2xl rounded-2xl bg-white shadow-2xl"><div className="flex items-center justify-between border-b border-[#eef1f4] px-6 py-4"><h2 className="text-base font-bold text-[#172433]">{tour ? 'Edit Tour' : 'Tambah Tour'}</h2><button onClick={onClose}><X size={18} /></button></div><form className="grid gap-4 p-6 sm:grid-cols-2" onSubmit={submit}>{[['title','Judul *'],['location','Lokasi'],['duration','Durasi'],['startDate','Mulai'],['endDate','Selesai'],['capacity','Kapasitas'],['price','Harga'],['image','URL Gambar']].map(([key, label]) => <FormField key={key} label={label} value={form[key]} onChange={(value) => update(key, value)} required={key === 'title'} />)}<div><label className="block text-xs font-semibold text-[#4e5866] mb-1.5">Paket</label><select className="w-full h-11 rounded-xl border border-[#e1e6eb] bg-white px-3 text-sm" value={form.tourPackageId} onChange={(e) => update('tourPackageId', e.target.value)}><option value="">Tanpa paket</option>{packages.map((item) => <option key={item.id} value={item.id}>{item.title}</option>)}</select></div><div><label className="block text-xs font-semibold text-[#4e5866] mb-1.5">Status</label><select className="w-full h-11 rounded-xl border border-[#e1e6eb] bg-white px-3 text-sm" value={form.status} onChange={(e) => update('status', e.target.value)}><option value="published">Published</option><option value="draft">Draft</option><option value="archived">Archived</option></select></div><div className="sm:col-span-2 flex justify-end gap-3 border-t border-[#eef1f4] pt-4"><button type="button" className="h-10 rounded-xl border border-[#e1e6eb] px-5 text-xs" onClick={onClose}>Batal</button><button type="submit" className="h-10 rounded-xl bg-primary px-6 text-xs font-bold text-white"><Save size={14} /> Simpan</button></div></form></div></div>
 }
 
 /* ── Package Form Modal ── */
@@ -511,39 +561,36 @@ function PackageFormModal({ pkg, onSave, onClose }) {
    AdminArticlesPage
    ══════════════════════════════════════════════════ */
 export function AdminArticlesPage() {
-  const [articles, setArticles] = useState(loadArticles)
+  const [articles, setArticles] = useState([])
   const [editingArticle, setEditingArticle] = useState(null)
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [deleteConfirm, setDeleteConfirm] = useState(null)
+  const [error, setError] = useState('')
+
+  useEffect(() => { api.list('articles').then(setArticles).catch((e) => { setArticles(articleData.articles); setError(getApiError(e)) }) }, [])
 
   const filtered = articles.filter(a =>
     a.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     a.category.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const handleSave = (article) => {
-    let updated
-    if (editingArticle) {
-      updated = articles.map(a => a.slug === editingArticle.slug ? { ...article, slug: article.slug || editingArticle.slug } : a)
-    } else {
-      updated = [...articles, { ...article, slug: article.slug || toSlug(article.title) }]
-    }
-    setArticles(updated)
-    saveArticles(updated)
-    setIsFormOpen(false)
-    setEditingArticle(null)
+  const handleSave = async (article) => {
+    try {
+      const saved = editingArticle ? await api.update('articles', editingArticle.slug, article) : await api.create('articles', article)
+      setArticles(current => editingArticle ? current.map(item => item.slug === editingArticle.slug ? saved : item) : [saved, ...current])
+      window.dispatchEvent(new Event('glws-api-updated'))
+      setIsFormOpen(false); setEditingArticle(null); setError('')
+    } catch (e) { setError(getApiError(e)) }
   }
 
   const handleDelete = (slug) => {
-    const updated = articles.filter(a => a.slug !== slug)
-    setArticles(updated)
-    saveArticles(updated)
-    setDeleteConfirm(null)
+    api.remove('articles', slug).then(() => { setArticles(current => current.filter(a => a.slug !== slug)); setDeleteConfirm(null); window.dispatchEvent(new Event('glws-api-updated')) }).catch((e) => setError(getApiError(e)))
   }
 
   return (
     <div>
+      {error && <p className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-xs text-red-600">{error}</p>}
       {/* Header */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -666,11 +713,11 @@ function ArticleFormModal({ article, onSave, onClose }) {
     category: article?.category ?? '',
     type: article?.type ?? 'guide',
     author: article?.author ?? '',
-    date: article?.date ?? new Date().toISOString().split('T')[0],
+    date: article?.publishedAt ?? article?.date ?? new Date().toISOString().split('T')[0],
     views: article?.views ?? '0',
     image: article?.image ?? '',
     tags: article?.tags?.join(', ') ?? '',
-    body: article?.body ?? '',
+    body: Array.isArray(article?.body) ? article.body.join('\n\n') : (article?.body ?? ''),
   })
 
   const updateField = (key, value) => setForm(prev => ({ ...prev, [key]: value }))
@@ -683,6 +730,10 @@ function ArticleFormModal({ article, onSave, onClose }) {
       ...form,
       slug,
       tags: form.tags.split(',').map(t => t.trim()).filter(Boolean),
+      body: form.body.split(/\n\s*\n|\n/).map(t => t.trim()).filter(Boolean),
+      publishedAt: form.date,
+      views: Number(form.views) || 0,
+      isPublished: true,
       highlights: article?.highlights ?? [],
     })
   }

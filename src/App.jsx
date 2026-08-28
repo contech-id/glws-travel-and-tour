@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
-import { AdminLoginPage, AdminLayout, AdminPackagesPage, AdminArticlesPage, getPackages, getArticles } from './AdminPanel'
+import { AdminLoginPage, AdminLayout, AdminPackagesPage, AdminToursPage, AdminArticlesPage } from './AdminPanel'
+import { api } from './api'
 
 import {
   ArrowRight,
@@ -45,7 +46,9 @@ import avatarJames from './assets/avatar-james.jpg'
 import avatarEmily from './assets/avatar-emily.jpg'
 import tourData from './data/tourData.json'
 import serviceData from './data/serviceData.json'
-import articleData from './data/articleData.json'
+import articleDataSeed from './data/articleData.json'
+import eventPromoData from './data/eventPromoData.json'
+import tourListData from './data/tourListData.json'
 
 const navLinks = [
   { label: 'Beranda', href: '/', page: 'home' },
@@ -63,7 +66,9 @@ const wisataCategories = tourData.categories.map((category) => ({
   page: 'category',
 }))
 
-const tourPackages = tourData.packages
+let tourPackages = tourData.packages
+let articleData = { ...articleDataSeed, articles: articleDataSeed.articles }
+let tourJourneys = tourListData
 
 function getPackageWhatsAppUrl(tourPackage) {
   const message = [
@@ -80,7 +85,7 @@ function getPackageWhatsAppUrl(tourPackage) {
     'Mohon informasi ketersediaan dan cara pemesanannya. Terima kasih.',
   ].join('\n')
 
-  return `https://wa.me/6281959594529?text=${encodeURIComponent(message)}`
+  return `https://wa.me/6281330663930?text=${encodeURIComponent(message)}`
 }
 
 const serviceLinks = serviceData.services.map((service) => ({
@@ -92,6 +97,7 @@ const serviceLinks = serviceData.services.map((service) => ({
 function resolveRoute(pathname = window.location.pathname) {
   if (pathname === '/admin') return { page: 'admin-login' }
   if (pathname === '/admin/packages') return { page: 'admin-packages' }
+  if (pathname === '/admin/tours') return { page: 'admin-tours' }
   if (pathname === '/admin/articles') return { page: 'admin-articles' }
 
   if (pathname === '/search') {
@@ -113,6 +119,10 @@ function resolveRoute(pathname = window.location.pathname) {
 
   if (pathname.startsWith('/layanan/')) {
     return { page: 'service', slug: pathname.split('/').filter(Boolean)[1] }
+  }
+
+  if (pathname.startsWith('/tour/')) {
+    return { page: 'tour', slug: pathname.split('/').filter(Boolean)[1] }
   }
 
   if (pathname === '/artikel') return { page: 'articles' }
@@ -241,10 +251,10 @@ const clients = [
   },
 ]
 
-const tourJourneys = [
+const tourJourneySeed = [
   {
     image: 'https://images.unsplash.com/photo-1688525141547-2e4c04a218d7?auto=format&fit=crop&w=1600&q=90',
-    title: 'Eksplorasi Kota Surabaya',
+    title: 'Surabaya',
     location: 'Surabaya, Jawa Timur',
     date: 'Juli 2026',
     travelers: '32 Traveler',
@@ -252,7 +262,7 @@ const tourJourneys = [
   },
   {
     image: 'https://images.unsplash.com/photo-1602154663343-89fe0bf541ab?auto=format&fit=crop&w=1600&q=90',
-    title: 'Bromo, Ijen & Tumpak Sewu',
+    title: 'Bromo- Ijen Tumpak Sewu',
     location: 'Jawa Timur, Indonesia',
     date: 'Juni 2026',
     travelers: '24 Traveler',
@@ -260,7 +270,7 @@ const tourJourneys = [
   },
   {
     image: 'https://images.unsplash.com/photo-1602486493959-78e7be266a62?auto=format&fit=crop&w=1600&q=90',
-    title: 'Petualangan Labuan Bajo',
+    title: 'Labuan Bajo',
     location: 'Flores, Nusa Tenggara Timur',
     date: 'Mei 2026',
     travelers: '20 Traveler',
@@ -268,7 +278,7 @@ const tourJourneys = [
   },
   {
     image: 'https://images.unsplash.com/photo-1555400038-63f5ba517a47?auto=format&fit=crop&w=1600&q=90',
-    title: 'Pesona Pulau Bali',
+    title: 'Bali',
     location: 'Bali, Indonesia',
     date: 'April 2026',
     travelers: '36 Traveler',
@@ -276,7 +286,7 @@ const tourJourneys = [
   },
   {
     image: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&w=1600&q=90',
-    title: 'Jelajah Negeri China',
+    title: 'China',
     location: 'China',
     date: 'Maret 2026',
     travelers: '28 Traveler',
@@ -284,7 +294,7 @@ const tourJourneys = [
   },
   {
     image: 'https://unsplash.com/photos/sMCNMrRopX4/download?force=true&w=1600',
-    title: 'Liburan Pulau Bintan',
+    title: 'Bintan',
     location: 'Bintan, Kepulauan Riau',
     date: 'Februari 2026',
     travelers: '26 Traveler',
@@ -292,7 +302,7 @@ const tourJourneys = [
   },
   {
     image: 'https://images.unsplash.com/photo-1730178988919-0d7fe97bc499?auto=format&fit=crop&w=1600&q=90',
-    title: 'Pesona Kota Batam',
+    title: 'Batam',
     location: 'Batam, Kepulauan Riau',
     date: 'Januari 2026',
     travelers: '30 Traveler',
@@ -300,7 +310,7 @@ const tourJourneys = [
   },
   {
     image: 'https://images.unsplash.com/photo-1508062878650-88b52897f298?auto=format&fit=crop&w=1600&q=90',
-    title: 'Malaysia City & Heritage Tour',
+    title: 'Malaysia',
     location: 'Malaysia',
     date: 'Desember 2025',
     travelers: '34 Traveler',
@@ -308,7 +318,7 @@ const tourJourneys = [
   },
   {
     image: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=1600&q=90',
-    title: 'Singapore City Experience',
+    title: 'Singapore',
     location: 'Singapore',
     date: 'November 2025',
     travelers: '30 Traveler',
@@ -316,7 +326,7 @@ const tourJourneys = [
   },
   {
     image: 'https://unsplash.com/photos/v_cClGhZ0Rk/download?force=true&w=1600',
-    title: 'Eksotisme Manado',
+    title: 'Manado',
     location: 'Manado, Sulawesi Utara',
     date: 'Oktober 2025',
     travelers: '22 Traveler',
@@ -324,7 +334,7 @@ const tourJourneys = [
   },
   {
     image: 'https://images.unsplash.com/photo-1741682739831-9f9627d15775?auto=format&fit=crop&w=1600&q=90',
-    title: 'Jakarta City Tour',
+    title: 'Jakarta',
     location: 'Jakarta, Indonesia',
     date: 'September 2025',
     travelers: '38 Traveler',
@@ -332,7 +342,7 @@ const tourJourneys = [
   },
   {
     image: 'https://images.unsplash.com/photo-1584810359583-96fc3448beaa?auto=format&fit=crop&w=1600&q=90',
-    title: 'Warisan Budaya Jogjakarta',
+    title: 'Jogjakarta',
     location: 'Jogjakarta, Indonesia',
     date: 'Agustus 2025',
     travelers: '32 Traveler',
@@ -359,7 +369,7 @@ const footerColumns = [
   },
   {
     title: 'Inspirasi',
-    links: ['Paket Tour', 'Jejak Perjalanan', 'Ulasan Traveler', 'Artikel'],
+    links: ['Paket Tour', 'List Tour', 'Ulasan Traveler', 'Artikel'],
   },
 ]
 
@@ -367,7 +377,7 @@ const whatsappContacts = [
   {
     initials: 'AD',
     name: 'Kontak Admin',
-    phone: '+6281330663930',
+    phone: '+62 813-3066-3930',
     color: 'bg-[#25d366]',
   }
 ]
@@ -419,7 +429,8 @@ const googleReviews = [
 
 function App() {
   const [route, setRoute] = useState(() => resolveRoute())
-  const [isAdminAuth, setIsAdminAuth] = useState(() => localStorage.getItem('glws_admin_auth') === 'true')
+  const [isAdminAuth, setIsAdminAuth] = useState(() => Boolean(localStorage.getItem(api.tokenKey)))
+  const [, refreshApiData] = useState(0)
 
   useEffect(() => {
     AOS.init({
@@ -429,6 +440,30 @@ function App() {
       once: true,
       mirror: false,
     })
+  }, [])
+
+  useEffect(() => {
+    if (!localStorage.getItem(api.tokenKey)) return
+    api.me().catch(() => { localStorage.removeItem(api.tokenKey); setIsAdminAuth(false) })
+  }, [])
+
+  useEffect(() => {
+    let ignore = false
+    const loadApiData = () => Promise.all([api.list('tour-packages'), api.list('articles'), api.list('tours')]).then(([packages, articles, tours]) => {
+      if (ignore) return
+      tourPackages = packages
+      articleData = { ...articleDataSeed, articles }
+      tourJourneys = tours.length ? tours.map((tour) => ({
+        ...tour,
+        slug: tour.slug || encodeURIComponent(tour.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')),
+        title: tour.title, location: tour.location || '', image: tour.image || '',
+        attractions: Array.isArray(tour.itinerary) ? tour.itinerary : [],
+      })) : tourListData
+      refreshApiData((value) => value + 1)
+    }).catch(() => {})
+    loadApiData()
+    window.addEventListener('glws-api-updated', loadApiData)
+    return () => { ignore = true; window.removeEventListener('glws-api-updated', loadApiData) }
   }, [])
 
   useEffect(() => {
@@ -488,16 +523,19 @@ function App() {
     }
 
     const handleAdminLogout = () => {
-      localStorage.removeItem('glws_admin_auth')
-      setIsAdminAuth(false)
-      setRoute({ page: 'admin-login' })
-      window.history.pushState({}, '', '/admin')
+      api.logout().catch(() => {}).finally(() => {
+        setIsAdminAuth(false)
+        setRoute({ page: 'admin-login' })
+        window.history.pushState({}, '', '/admin')
+      })
     }
 
     return (
       <AdminLayout currentSection={route.page} onNavigate={handleAdminNavigate} onLogout={handleAdminLogout}>
         {route.page === 'admin-articles' ? (
           <AdminArticlesPage />
+        ) : route.page === 'admin-tours' ? (
+          <AdminToursPage />
         ) : (
           <AdminPackagesPage />
         )}
@@ -517,6 +555,8 @@ function App() {
         <TourCategoryPage slug={route.slug} onNavigate={navigateTo} />
       ) : route.page === 'package' ? (
         <TourPackageDetailPage slug={route.slug} onNavigate={navigateTo} />
+      ) : route.page === 'tour' ? (
+        <TourDetailPage slug={route.slug} onNavigate={navigateTo} />
       ) : route.page === 'service' ? (
         <ServiceDetailPage slug={route.slug} onNavigate={navigateTo} />
       ) : route.page === 'articles' ? (
@@ -532,8 +572,9 @@ function App() {
           <ClientLogoSection />
           <TravelTypeSection onNavigate={navigateTo} />
           <TourPackageSection onNavigate={navigateTo} />
-          <TourJourneySection />
+          <TourListSection />
           <GoogleBusinessSection />
+          <EventPromoSection />
           <CTASection />
           <ContactSection />
         </>
@@ -623,15 +664,25 @@ function TourPackageDetailPage({ slug, onNavigate }) {
   const detailTabs = [
     ['overview', 'Overview'],
     ['galeri', 'Galeri'],
-    ['harga', 'Harga'],
-    ['fasilitas', 'Fasilitas'],
-    ['itinerary', 'Itinerary'],
-    ['hotel', 'Hotel'],
     ['faq', 'FAQ'],
   ]
   const [activeDetailTab, setActiveDetailTab] = useState('overview')
   const [isShareOpen, setIsShareOpen] = useState(false)
+  const [recommendedPackages, setRecommendedPackages] = useState([])
   const tourPackage = tourPackages.find((item) => item.slug === slug)
+
+  useEffect(() => {
+    api.list('packages').then(data => {
+      setRecommendedPackages(data.filter(pkg => pkg.slug !== slug).slice(0, 4))
+    }).catch(err => console.error('Failed to fetch recommended packages:', err))
+  }, [slug])
+
+  const faqData = [
+    { question: 'Apa saja fasilitas yang sudah termasuk dalam harga paket?', answer: 'Fasilitas bervariasi bergantung pada paket yang dipilih. Umumnya mencakup transportasi, akomodasi, tiket wisata utama, dan konsumsi. Silakan baca bagian detail fasilitas pada brosur setiap paket.' },
+    { question: 'Apakah jadwal perjalanan bisa diubah?', answer: 'Untuk paket private tour, jadwal sangat fleksibel dan dapat diubah sesuai kesepakatan. Namun, untuk paket open trip, jadwal sudah tetap dan tidak bisa diubah.' },
+    { question: 'Bagaimana sistem pembayarannya?', answer: 'Pembayaran dapat dilakukan secara bertahap. Uang muka (DP) minimal 30% dibayarkan saat pemesanan, dan pelunasan paling lambat 7 hari sebelum keberangkatan.' },
+    { question: 'Apakah harga paket sudah termasuk tiket pesawat?', answer: 'Beberapa paket sudah all-in termasuk tiket pesawat, namun ada pula paket land tour (tanpa tiket pesawat). Cek ringkasan harga di bagian atas untuk informasi lebih jelas.' }
+  ]
 
   useEffect(() => {
     const updateActiveTab = () => {
@@ -723,9 +774,7 @@ function TourPackageDetailPage({ slug, onNavigate }) {
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
               {[
                 [CalendarDays, 'Berangkat', tourPackage.departure],
-                [Clock3, 'Durasi', tourPackage.duration],
                 [MapPin, 'Kota', tourPackage.location],
-                [Users, 'Kapasitas', tourPackage.capacity],
               ].map(([Icon, label, value], index) => (
                 <div className="rounded-lg bg-[#f2f5f7] px-3 py-4 text-center" data-aos="zoom-in" data-aos-delay={index * 60} key={label}>
                   <Icon className="mx-auto text-secondary" size={18} />
@@ -751,46 +800,28 @@ function TourPackageDetailPage({ slug, onNavigate }) {
             </div>
           </DetailSection>
 
-          <DetailSection icon={Star} title="Harga" id="harga">
-            <p className="text-sm leading-7 text-[#697483]">{tourPackage.overview}</p>
-            <div className="mt-5 flex flex-wrap items-end justify-between gap-3 border-t border-[#e6eaee] pt-5">
-              <span className="text-xs text-[#77818e]">Harga per orang, mulai dari</span>
-              <strong className="text-2xl font-black text-[#121820]">{tourPackage.price}</strong>
-            </div>
-          </DetailSection>
-
           <DetailSection icon={ShieldCheck} title="Fasilitas" id="fasilitas">
             <div className="grid gap-3 sm:grid-cols-2">
-              {tourPackage.facilities.map((facility, index) => (
-                <div className="flex items-center gap-3 rounded-lg bg-secondary/15 px-4 py-3 text-sm font-medium text-[#4f5a68]" data-aos="fade-up" data-aos-delay={index * 50} key={facility}>
-                  <ShieldCheck className="shrink-0 text-[#10b981]" size={17} /> {facility}
+              {[
+                'Akomodasi hotel pilihan',
+                'Transportasi selama perjalanan',
+                'Sarapan dan makan sesuai program',
+                'Tiket objek wisata utama',
+                'Pemandu wisata profesional',
+                'Dokumentasi perjalanan',
+              ].map((facility) => (
+                <div className="flex items-center gap-3 rounded-lg border border-[#e3e8ec] bg-[#f8fafb] px-4 py-3 text-sm text-[#4e5866]" key={facility}>
+                  <ShieldCheck className="shrink-0 text-secondary" size={17} />
+                  {facility}
                 </div>
               ))}
             </div>
           </DetailSection>
 
-          <DetailSection icon={Compass} title="Itinerary Perjalanan" id="itinerary">
-            <div className="space-y-4">
-              {tourPackage.itinerary.map((item, index) => (
-                <div className="flex gap-4" data-aos="fade-up" data-aos-delay={index * 50} key={item}>
-                  <span className="grid size-8 shrink-0 place-items-center rounded-full bg-secondary/15 text-xs font-black text-primary">{index + 1}</span>
-                  <div className="pt-1.5">
-                    <strong className="text-sm text-[#202733]">Hari {index + 1}</strong>
-                    <p className="mt-1 text-sm leading-6 text-[#6f7987]">{item}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </DetailSection>
-
-          <DetailSection icon={MapPin} title="Hotel" id="hotel">
-            <p className="text-sm leading-7 text-[#697483]">{tourPackage.hotel}</p>
-          </DetailSection>
-
-          <DetailSection icon={MessageCircle} title="Pertanyaan Umum" id="faq">
-            <div className="space-y-2">
-              {tourPackage.faq.map((item, index) => (
-                <PackageFaqItem item={item} index={index} key={item.question} />
+          <DetailSection icon={MessageCircle} title="Pertanyaan Umum (FAQ)" id="faq">
+            <div className="space-y-3">
+              {faqData.map((item, index) => (
+                <PackageFaqItem item={item} index={index} key={index} />
               ))}
             </div>
           </DetailSection>
@@ -854,6 +885,25 @@ function TourPackageDetailPage({ slug, onNavigate }) {
           </section>
         </aside>
       </div>
+
+      {recommendedPackages.length > 0 && (
+        <section className="mx-auto mt-16 max-w-[72rem] px-6 md:px-8" aria-labelledby="recommendation-title">
+          <div className="mb-6" data-aos="fade-up">
+            <h2 className="text-xl font-black text-[#121820]" id="recommendation-title">Rekomendasi Paket Lainnya</h2>
+          </div>
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+            {recommendedPackages.map((pkg, index) => (
+              <TourPackageCard
+                layout="grid"
+                tourPackage={pkg}
+                onNavigate={onNavigate}
+                animationDelay={index * 60}
+                key={pkg.slug}
+              />
+            ))}
+          </div>
+        </section>
+      )}
     </main>
   )
 }
@@ -1001,7 +1051,7 @@ function ServiceDetailPage({ slug, onNavigate }) {
             <p className="mt-3 text-xs leading-5 text-[#7b8592]">Dapatkan konsultasi awal dan penawaran yang disesuaikan dengan kebutuhan Anda.</p>
             <a
               className="mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-primary text-xs font-bold text-white shadow-[0_8px_18px_rgba(10,167,229,0.2)] transition-colors hover:bg-primary/90"
-              href="https://wa.me/6281959594529"
+              href="https://wa.me/6281330663930"
               target="_blank"
               rel="noreferrer"
             >
@@ -1215,7 +1265,7 @@ function ArticleDetailPage({ slug, onNavigate }) {
           </div>
           <a
             className="inline-flex h-9 items-center justify-center gap-2 rounded-lg bg-[#19be63] px-4 text-xs font-bold text-white transition-colors hover:bg-[#14aa57]"
-            href="https://wa.me/6281959594529"
+            href="https://wa.me/6281330663930"
             target="_blank"
             rel="noreferrer"
           >
@@ -1664,7 +1714,7 @@ function TravelHero({ onNavigate }) {
 
       <div className="relative z-10 mx-auto w-full max-w-[80rem] px-6 pt-28 pb-28 text-center md:px-18" data-aos="fade-up">
         <p className="text-[0.68rem] font-semibold tracking-[0.38em] text-white/85 uppercase md:text-xs">
-          Jelajah · Temukan · Nikmati · Kenang
+          PT. Ganes Lancar Wisata Sukses
         </p>
         <h1 className="mx-auto mt-5 max-w-[54rem] text-[clamp(2.75rem,6.8vw,5.4rem)] leading-[0.94] font-bold tracking-[-0.065em]">
           Jelajahi Keindahan
@@ -1677,19 +1727,6 @@ function TravelHero({ onNavigate }) {
         </p>
 
         <div className="mx-auto mt-9 max-w-[42rem] rounded-2xl border border-white/25 bg-[#07182d]/72 p-3 text-left shadow-[0_20px_50px_rgba(3,17,31,0.25)] backdrop-blur-md" data-aos="zoom-in" data-aos-delay="120">
-          <div className="tour-search-tabs mb-3 flex gap-1 overflow-x-auto">
-            {['Destinasi', 'Aktivitas', 'Penginapan', 'Kuliner', 'Event'].map((tab, index) => (
-              <button
-                className={`inline-flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold transition-colors ${index === 0 ? 'bg-white text-[#172433]' : 'text-white/72 hover:bg-white/10 hover:text-white'
-                  }`}
-                type="button"
-                key={tab}
-              >
-                {index === 0 && <MapPin size={13} className="text-primary" />}
-                {tab}
-              </button>
-            ))}
-          </div>
           <div className="grid gap-2 sm:grid-cols-[1fr_7.5rem]">
             <label className="flex min-h-12 items-center gap-3 rounded-xl bg-white px-4 text-[#707a88]">
               <Search size={18} className="shrink-0 text-[#93a1ae]" />
@@ -1756,7 +1793,7 @@ function HeroStats() {
 
   return (
     <div className="mx-auto relative z-20 max-w-[80rem] px-6 lg:px-8 -mt-10 mb-6">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat, i) => (
           <div key={i} className="flex items-center gap-4 rounded-2xl bg-white p-5 shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-200 transition-transform hover:-translate-y-1" data-aos="fade-up" data-aos-delay={i * 70}>
             <div className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl ${stat.iconBg} ${stat.iconColor}`}>
@@ -1898,7 +1935,7 @@ function SiteNavbar({ currentPage, onNavigate }) {
           className="absolute top-full right-0 left-0 border-t border-[#edf0f5] bg-white px-5 py-4 shadow-[0_18px_30px_rgba(29,44,76,0.12)] xl:hidden"
           id="mobile-navigation"
         >
-          <div className="mx-auto grid max-w-[80rem] gap-1">
+          <div className="mx-auto grid max-w-[80rem] grid-cols-2 gap-1">
             {navLinks.map((link) => (
               <div key={link.label}>
                 <a
@@ -2050,7 +2087,7 @@ function TravelTypeSection({ onNavigate }) {
             </p>
           </div>
 
-          <div className="relative z-10 mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="relative z-10 mt-7 grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {travelTypes.map((travelType, index) => {
               const Icon = travelType.icon
 
@@ -2168,10 +2205,14 @@ function TourPackageCard({ tourPackage, onNavigate, animationDelay = 0, layout =
 
   return (
     <article
-      className={`${layoutClassName} overflow-hidden rounded-[1.35rem] border border-[#dfe3e8] bg-white shadow-[0_10px_28px_rgba(42,57,78,0.08)] ${className}`}
+      className={`${layoutClassName} overflow-hidden rounded-[1.35rem] border border-[#dfe3e8] bg-white shadow-[0_10px_28px_rgba(42,57,78,0.08)] cursor-pointer hover:border-primary/50 transition-colors ${className}`}
       data-package-card
       data-aos="fade-up"
       data-aos-delay={animationDelay}
+      onClick={(event) => {
+        if (event.target.closest('button') || event.target.closest('a')) return
+        onNavigate(event, detailLink)
+      }}
     >
       <div className="relative">
         <img className="h-48 w-full object-cover" src={tourPackage.image} alt={tourPackage.title} />
@@ -2201,15 +2242,6 @@ function TourPackageCard({ tourPackage, onNavigate, animationDelay = 0, layout =
         <p className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-[#4d5766]">
           <MapPin size={13} className="text-primary" /> {tourPackage.location}
         </p>
-
-        <div className="mt-3 flex flex-wrap gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary/15 px-2.5 py-1.5 text-[0.62rem] text-[#657080]">
-            <CalendarDays size={12} className="text-primary" /> {tourPackage.duration}
-          </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary/15 px-2.5 py-1.5 text-[0.62rem] text-[#657080]">
-            <UserRound size={12} className="text-primary" /> {tourPackage.capacity}
-          </span>
-        </div>
 
         <p className="mt-3 min-h-11 text-[0.68rem] leading-[1.55] text-[#727b88]">
           {tourPackage.description}
@@ -2286,7 +2318,7 @@ function WhatsAppWidget() {
                   </div>
                   <a
                     className="text-xs font-semibold text-[#19c963] hover:text-[#0dac4d]"
-                    href={`https://wa.me/${contact.phone.replace('+', '')}`}
+                    href={`https://wa.me/${contact.phone.replace(/\D/g, '')}`}
                     target="_blank"
                     rel="noreferrer"
                     aria-label={`Chat WhatsApp dengan ${contact.name}`}
@@ -2321,7 +2353,7 @@ function WhatsAppWidget() {
   )
 }
 
-function TourJourneySection() {
+function TourListSection() {
   const carouselRef = useRef(null)
 
   const moveCarousel = (direction) => {
@@ -2337,21 +2369,21 @@ function TourJourneySection() {
   }
 
   return (
-    <section className="bg-white px-6 py-12 md:px-18" id="tour-journey" aria-labelledby="tour-journey-title">
+    <section className="bg-[#f8f9fa] px-6 py-10 md:px-18" id="tour-list" aria-labelledby="tour-list-title">
       <div className="mx-auto max-w-[80rem]">
         <div className="mb-6 text-center" data-aos="fade-up">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-[#eaf4ff] px-3 py-1.5 text-xs font-semibold text-[#253044]">
             <Sparkles size={13} className="text-secondary" />
-            Jejak Perjalanan
+            List Tour
           </span>
           <h2
             className="mt-3 text-[clamp(1.35rem,2.2vw,1.8rem)] leading-tight font-bold tracking-[-0.035em] text-[#101624]"
-            id="tour-journey-title"
+            id="tour-list-title"
           >
-            Perjalanan yang Telah Kami Jelajahi
+            Destinasi Tour Pilihan
           </h2>
           <p className="mt-1.5 text-sm text-[#7a8391]">
-            Melihat kembali destinasi pilihan dan momen berkesan yang pernah kami jelajahi bersama para traveler.
+            Pilih destinasi tour favorit Anda dan mulai rencanakan perjalanan bersama kami.
           </p>
         </div>
 
@@ -2359,7 +2391,7 @@ function TourJourneySection() {
           <button
             className="grid size-10 place-items-center rounded-full border border-[#dfe3e8] bg-white text-[#344054] shadow-sm transition-colors hover:border-secondary hover:bg-secondary/15 hover:text-secondary"
             type="button"
-            aria-label="Perjalanan sebelumnya"
+            aria-label="Tour sebelumnya"
             onClick={() => moveCarousel(-1)}
           >
             <ChevronLeft size={19} />
@@ -2367,7 +2399,7 @@ function TourJourneySection() {
           <button
             className="grid size-10 place-items-center rounded-full bg-primary text-white shadow-[0_6px_16px_rgba(16,166,225,0.25)] transition-colors hover:bg-secondary"
             type="button"
-            aria-label="Perjalanan berikutnya"
+            aria-label="Tour berikutnya"
             onClick={() => moveCarousel(1)}
           >
             <ChevronRight size={19} />
@@ -2377,58 +2409,47 @@ function TourJourneySection() {
         <div
           className="tour-journey-carousel flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-1"
           ref={carouselRef}
-          aria-label="Daftar riwayat perjalanan tour"
+          aria-label="Daftar destinasi tour"
         >
           {tourJourneys.map((journey, index) => (
             <article
-              className="flex min-h-[27rem] w-[18.5rem] shrink-0 snap-start flex-col rounded-xl border border-[#dfe3e8] bg-white p-4 sm:w-[20rem]"
+              className="w-[15rem] shrink-0 snap-start overflow-hidden rounded-[1.15rem] border border-[#dfe3e8] bg-white shadow-[0_8px_24px_rgba(42,57,78,0.07)] sm:w-[16rem] md:w-[17rem]"
               data-tour-card
               data-aos="fade-up"
               data-aos-delay={index * 60}
               key={journey.title}
             >
-              <div className="flex items-center justify-between">
-                <span className="grid size-10 place-items-center rounded-xl bg-secondary/15 text-primary">
-                  <MapPin size={19} strokeWidth={1.8} />
-                </span>
-                <span className="rounded-full bg-secondary/15 px-2.5 py-1 text-[0.65rem] font-semibold text-[#6d7887]">
-                  Selesai
-                </span>
-              </div>
-
-              <h3 className="mt-4 text-base font-bold text-[#171a20]">{journey.title}</h3>
-              <p className="mt-1 text-xs text-[#747d8b]">{journey.location}</p>
-
-              <div className="mt-4 overflow-hidden rounded-xl bg-[#eff4f7]">
+              <div className="relative overflow-hidden bg-[#eff4f7]">
                 <img
-                  className="h-40 w-full object-cover transition-transform duration-500 hover:scale-105"
+                  className="h-32 w-full object-cover transition-transform duration-500 hover:scale-105"
                   src={journey.image}
-                  alt={`Perjalanan ${journey.title}`}
+                  alt={`Destinasi tour ${journey.title}`}
                   loading="lazy"
                 />
+                <span className="absolute bottom-2 left-2 rounded-full bg-[#07182d]/80 px-2.5 py-1 text-[0.6rem] font-semibold text-white">
+                  {journey.location}
+                </span>
               </div>
 
-              <div className="mt-4">
-                <p className="text-[0.65rem] font-bold text-[#303846] uppercase">Objek Wisata</p>
+              <div className="p-3.5">
+                <h3 className="text-sm font-bold leading-tight text-[#171a20]">{journey.title}</h3>
                 <div className="mt-2 flex flex-wrap gap-1.5">
-                  {journey.attractions.map((attraction) => (
+                  {journey.attractions.slice(0, 2).map((attraction) => (
                     <span
-                      className="rounded-full bg-[#eef7fb] px-2 py-1 text-[0.62rem] font-medium text-[#4f6172]"
+                      className="rounded-full bg-[#eef7fb] px-2 py-1 text-[0.58rem] font-medium text-[#4f6172]"
                       key={attraction}
                     >
                       {attraction}
                     </span>
                   ))}
                 </div>
-              </div>
-
-              <div className="mt-auto flex items-center justify-between gap-3 pt-4 text-[0.66rem] text-[#727c8a]">
-                <span className="inline-flex items-center gap-1.5">
-                  <CalendarDays size={13} className="text-primary" /> {journey.date}
-                </span>
-                <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
-                  <UserRound size={13} className="text-primary" /> {journey.travelers}
-                </span>
+                <a
+                  className="mt-3 inline-flex items-center gap-1 text-[0.68rem] font-semibold text-primary transition-colors hover:text-secondary"
+                  href={`/tour/${journey.slug}`}
+                  onClick={(event) => onNavigate(event, { page: 'tour', slug: journey.slug })}
+                >
+                  Lihat Detail <ArrowRight size={13} />
+                </a>
               </div>
             </article>
           ))}
@@ -2440,7 +2461,7 @@ function TourJourneySection() {
 
 function GoogleBusinessSection() {
   const googleMapsUrl =
-    'https://www.google.com/maps/search/?api=1&query=PT. Ganes Lancar+Tour+Bandung'
+    'https://www.google.com/maps/search/?api=1&query=Jln%20nuansa%20II%20no%2C%202a%2C%20Taman%20griya%20jimbaran%20bali%2C%2080361'
 
   return (
     <section className="bg-white px-6 py-10 md:px-18" id="google-profile">
@@ -2463,7 +2484,7 @@ function GoogleBusinessSection() {
               H
             </span>
             <div className="min-w-0 flex-1">
-              <h3 className="text-sm font-bold text-[#111319]">PT. Ganes Lancar & Travel</h3>
+              <h3 className="text-sm font-bold text-[#111319]">PT. Ganes Lancar Wisata Sukses</h3>
               <p className="mt-0.5 text-[0.67rem] text-[#717987]">Travel agency</p>
               <div className="mt-1 flex flex-wrap items-center gap-1.5">
                 <strong className="text-xs font-bold text-[#12151b]">5.0</strong>
@@ -2492,14 +2513,13 @@ function GoogleBusinessSection() {
           <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 border-t border-[#e1e4e8] pt-3 text-[0.66rem] text-[#28303c]">
             <span className="inline-flex items-start gap-2">
               <MapPin className="mt-px shrink-0 text-secondary" size={14} />
-              Jl. Pamanukan No.12, Antapani Kulon, Kec. Antapani, Kota Bandung, Jawa Barat 40291,
-              Indonesia
+              Jln nuansa II no, 2a, Taman griya jimbaran bali, 80361
             </span>
             <span className="inline-flex items-center gap-2 whitespace-nowrap">
               <Clock3 className="text-secondary" size={14} /> Rabu · 9AM–5PM
             </span>
-            <a className="inline-flex items-center gap-2 whitespace-nowrap hover:text-secondary" href="tel:+6281959594529">
-              <Phone className="text-secondary" size={14} /> +62 819-5959-4529
+            <a className="inline-flex items-center gap-2 whitespace-nowrap hover:text-secondary" href="tel:+6281330663930">
+              <Phone className="text-secondary" size={14} /> +62 813-3066-3930
             </a>
           </div>
         </article>
@@ -2561,10 +2581,43 @@ function GoogleReviewCard({ review }) {
   )
 }
 
+function EventPromoSection() {
+  return (
+    <section className="bg-[#f8f9fa] px-6 py-10 md:px-18" id="event-promo" aria-labelledby="event-promo-title">
+      <div className="mx-auto max-w-[80rem]">
+        <div className="mb-5 flex items-end justify-between gap-4" data-aos="fade-up">
+          <div>
+            <p className="text-xs font-bold text-primary">Event &amp; Promo</p>
+            <h2 className="mt-1.5 text-2xl font-black tracking-[-0.04em] text-[#172433]" id="event-promo-title">Jangan Lewatkan Event Terbaru</h2>
+            <p className="mt-1 text-sm text-[#7a8391]">Penawaran khusus dan agenda perjalanan pilihan untuk Anda.</p>
+          </div>
+        </div>
+
+        <div className="grid gap-5 md:grid-cols-3">
+          {eventPromoData.map((promo) => (
+            <article className="overflow-hidden rounded-2xl border border-[#dfe3e8] bg-white shadow-[0_10px_28px_rgba(42,57,78,0.08)]" data-aos="fade-up" key={promo.title}>
+              <img className="h-48 w-full object-cover" src={promo.image} alt={`Poster ${promo.title}`} />
+              <div className="p-5">
+                <span className="w-fit rounded-full bg-secondary/15 px-3 py-1.5 text-[0.62rem] font-bold text-secondary">{promo.badge}</span>
+                <h3 className="mt-3 text-lg font-black leading-tight text-[#172433]">{promo.title}</h3>
+                <p className="mt-2 min-h-12 text-xs leading-5 text-[#687382]">{promo.description}</p>
+                <strong className="mt-4 block text-sm font-black text-primary">{promo.offer}</strong>
+                <a className="mt-4 inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-[#f5c542] px-4 text-xs font-bold text-[#172433] transition-colors hover:bg-[#d9a900]" href={`https://wa.me/6281330663930?text=${encodeURIComponent(`Halo Ganes Tour, saya tertarik dengan ${promo.title}.`)}`} target="_blank" rel="noreferrer">
+                  <MessageCircle size={15} /> Info Selengkapnya
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function SiteFooter({ onNavigate }) {
   const footerSectionLinks = [
     { label: 'Paket Tour', href: '/#tour-packages', page: 'home', section: 'tour-packages' },
-    { label: 'Jejak Perjalanan', href: '/#tour-journey', page: 'home', section: 'tour-journey' },
+    { label: 'List Tour', href: '/#tour-list', page: 'home', section: 'tour-list' },
     { label: 'Ulasan Traveler', href: '/#google-profile', page: 'home', section: 'google-profile' },
   ]
 
@@ -2613,7 +2666,7 @@ function SiteFooter({ onNavigate }) {
 
           <div className="mt-5 grid gap-2.5 text-[0.68rem]">
             <a className="flex items-center gap-2.5 hover:text-white" href="https://wa.me/6281330663930" target="_blank" rel="noreferrer">
-              <MessageCircle size={13} strokeWidth={1.7} /> 0813-3066-3930
+              <MessageCircle size={13} strokeWidth={1.7} /> +62 813-3066-3930
             </a>
             <a className="flex items-center gap-2.5 hover:text-white" href="mailto:ganeslancarwisatasukses@gmail.com">
               <Mail size={13} strokeWidth={1.7} /> ganeslancarwisatasukses@gmail.com
@@ -2697,7 +2750,7 @@ function CTASection() {
                 <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
               </a>
               <a
-                href="https://wa.me/6281959594529"
+                href="https://wa.me/6281330663930"
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center justify-center gap-2 h-12 px-8 rounded-full bg-[#25d366] hover:bg-[#20bd5a] text-white text-sm font-semibold transition-all duration-300 hover:scale-105 shadow-xl shadow-black/10 active:scale-95 w-full sm:w-auto"
@@ -2729,10 +2782,10 @@ function ContactSection() {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 bg-white p-6 md:p-8 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-[#e1e6eb]" data-aos="fade-up" data-aos-delay="100">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 bg-white p-6 md:p-8 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-[#e1e6eb]" data-aos="fade-up" data-aos-delay="100">
 
           {/* Kolom Kiri: Informasi Kontak */}
-          <div className="flex flex-col justify-center space-y-6">
+          <div className="flex flex-col justify-center space-y-6 overflow-hidden">
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0 h-12 w-12 rounded-full bg-primary/10 text-primary flex items-center justify-center">
                 <MapPin size={20} />
@@ -2740,8 +2793,9 @@ function ContactSection() {
               <div>
                 <h3 className="text-lg font-bold text-[#172433]">Alamat Kantor</h3>
                 <p className="mt-1 text-[#667386] leading-relaxed">
-                  PT. Ganes Lancar<br />
-                  Bandung, Jawa Barat, Indonesia
+                  Jln nuansa II no, 2a<br />
+                  Taman griya jimbaran bali<br />
+                  80361
                 </p>
               </div>
             </div>
@@ -2753,7 +2807,7 @@ function ContactSection() {
               <div>
                 <h3 className="text-lg font-bold text-[#172433]">Kontak Admin (WhatsApp)</h3>
                 <a href="https://wa.me/6281330663930" target="_blank" rel="noreferrer" className="mt-1 block text-primary hover:underline font-medium">
-                  0813-3066-3930
+                  +62 813-3066-3930
                 </a>
               </div>
             </div>
@@ -2762,9 +2816,9 @@ function ContactSection() {
               <div className="flex-shrink-0 h-12 w-12 rounded-full bg-primary/10 text-primary flex items-center justify-center">
                 <Mail size={20} />
               </div>
-              <div>
+              <div className="min-w-0">
                 <h3 className="text-lg font-bold text-[#172433]">Email</h3>
-                <a href="mailto:ganeslancarwisatasukses@gmail.com" className="mt-1 block text-[#667386] hover:text-primary transition-colors">
+                <a href="mailto:ganeslancarwisatasukses@gmail.com" className="mt-1 block text-[#667386] hover:text-primary transition-colors break-words">
                   ganeslancarwisatasukses@gmail.com
                 </a>
               </div>
@@ -2774,15 +2828,15 @@ function ContactSection() {
               <div className="flex-shrink-0 h-12 w-12 rounded-full bg-primary/10 text-primary flex items-center justify-center">
                 <Globe2 size={20} />
               </div>
-              <div>
+              <div className="min-w-0">
                 <h3 className="text-lg font-bold text-[#172433]">Sosial Media</h3>
                 <div className="mt-2 flex items-center gap-4">
-                  <a href="https://instagram.com/glws.tourtravel" target="_blank" rel="noreferrer" className="text-[#667386] hover:text-[#df3aa6] transition-colors font-medium text-sm flex items-center gap-1.5">
+                  <a href="https://instagram.com/glws.tourtravel" target="_blank" rel="noreferrer" className="text-[#667386] hover:text-[#df3aa6] transition-colors font-medium text-sm flex items-center gap-1.5 truncate">
                     Instagram: @glws.tourtravel
                   </a>
                 </div>
                 <div className="mt-1 flex items-center gap-4">
-                  <a href="https://tiktok.com/@glwstoutravel" target="_blank" rel="noreferrer" className="text-[#667386] hover:text-black transition-colors font-medium text-sm flex items-center gap-1.5">
+                  <a href="https://tiktok.com/@glwstoutravel" target="_blank" rel="noreferrer" className="text-[#667386] hover:text-black transition-colors font-medium text-sm flex items-center gap-1.5 truncate">
                     Tiktok: @glwstoutravel
                   </a>
                 </div>
@@ -2793,7 +2847,7 @@ function ContactSection() {
           {/* Kolom Kanan: Google Maps Embed */}
           <div className="h-[300px] lg:h-[400px] w-full rounded-2xl overflow-hidden border border-gray-100 bg-gray-50 relative">
             <iframe
-              src="https://maps.google.com/maps?q=PT.%20Ganes%20Lancar%20Tour%20Bandung&t=&z=15&ie=UTF8&iwloc=&output=embed"
+              src="https://maps.google.com/maps?q=Jln%20nuansa%20II%20no%2C%202a%2C%20Taman%20griya%20jimbaran%20bali%2C%2080361&t=&z=15&ie=UTF8&iwloc=&output=embed"
               className="absolute inset-0 w-full h-full"
               style={{ border: 0 }}
               allowFullScreen=""
@@ -2925,5 +2979,166 @@ function SearchPage({ query, onNavigate }) {
         </div>
       </div>
     </div>
+  )
+}
+
+function TourDetailPage({ slug, onNavigate }) {
+  const detailTabs = [
+    ['overview', 'Overview'],
+  ]
+  const [activeDetailTab, setActiveDetailTab] = useState('overview')
+  const [isShareOpen, setIsShareOpen] = useState(false)
+  
+  const tourJourney = tourJourneys.find((item) => item.slug === slug)
+
+  useEffect(() => {
+    const updateActiveTab = () => {
+      const scrollPosition = window.scrollY + 180
+      let currentSection = detailTabs[0][0]
+      for (const [id] of detailTabs) {
+        const element = document.getElementById(id)
+        if (element && element.offsetTop <= scrollPosition) {
+          currentSection = id
+        }
+      }
+      setActiveDetailTab(currentSection)
+    }
+
+    window.addEventListener('scroll', updateActiveTab)
+    return () => window.removeEventListener('scroll', updateActiveTab)
+  }, [])
+
+  if (!tourJourney) {
+    return <PageNotFound onNavigate={onNavigate} />
+  }
+
+  // URL Encode message for WhatsApp
+  const tourWhatsAppUrl = getPackageWhatsAppUrl({
+    title: tourJourney.title,
+    category: 'List Tour',
+    location: tourJourney.location,
+    price: 'Hubungi Kami',
+    duration: '-',
+    departure: tourJourney.date || '-',
+    capacity: tourJourney.travelers || '-'
+  })
+
+  const socialShareLinks = [
+    { label: 'Facebook', href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}` },
+    { label: 'Twitter', href: `https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}` },
+    { label: 'WhatsApp', href: `https://wa.me/?text=${encodeURIComponent(`${tourJourney.title} - ${window.location.href}`)}` },
+  ]
+
+  return (
+    <main className="min-h-screen bg-[#f6f8fa] pb-16 pt-24 md:pb-24">
+      <div className="sticky top-16 z-30 flex overflow-x-auto border-b border-[#e9edf0] bg-white/95 px-6 pt-3 shadow-sm backdrop-blur-md md:top-20 md:px-8">
+        <div className="mx-auto flex w-full max-w-[72rem] gap-6">
+          {detailTabs.map(([id, label]) => (
+            <a
+              className={`whitespace-nowrap border-b-[2.5px] pb-3 text-[0.8rem] font-bold transition-colors ${activeDetailTab === id ? 'border-primary text-primary' : 'border-transparent text-[#7a8594] hover:border-[#ced4da] hover:text-[#424c58]'}`}
+              href={`#${id}`}
+              key={id}
+              onClick={(e) => { e.preventDefault(); document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }}
+            >
+              {label}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <header className="mx-auto max-w-[72rem] px-6 pt-10 md:px-8" data-aos="fade-up">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <div className="flex items-center gap-2 text-xs font-semibold text-secondary">
+              <MapPin size={14} /> <span>{tourJourney.location}</span>
+            </div>
+            <h1 className="mt-2 text-3xl font-black text-[#121820] sm:text-4xl">{tourJourney.title}</h1>
+          </div>
+        </div>
+      </header>
+
+      <div className="mx-auto mt-6 max-w-[72rem] px-6 md:px-8" data-aos="fade-up">
+        <img className="aspect-[21/9] w-full rounded-2xl object-cover shadow-sm" src={tourJourney.image} alt={tourJourney.title} />
+      </div>
+
+      <div className="mx-auto grid max-w-[72rem] items-start gap-5 px-6 pt-8 md:px-8 lg:grid-cols-[minmax(0,1fr)_18rem]">
+        <div className="min-w-0 space-y-7">
+          <DetailSection icon={Package} title="Overview" id="overview">
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-2">
+              <div className="rounded-lg bg-[#f2f5f7] px-3 py-4 text-center">
+                <CalendarDays className="mx-auto text-secondary" size={18} />
+                <span className="mt-2 block text-[0.65rem] text-[#7a8491]">Waktu Tour</span>
+                <strong className="mt-1 block text-xs text-[#121820]">{tourJourney.date || '-'}</strong>
+              </div>
+              <div className="rounded-lg bg-[#f2f5f7] px-3 py-4 text-center">
+                <Users className="mx-auto text-secondary" size={18} />
+                <span className="mt-2 block text-[0.65rem] text-[#7a8491]">Kapasitas</span>
+                <strong className="mt-1 block text-xs text-[#121820]">{tourJourney.travelers || '-'}</strong>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <h3 className="text-sm font-bold mb-3 text-[#121820]">Atraksi/Destinasi:</h3>
+              <ul className="list-disc pl-5 text-sm text-[#4a5568] space-y-1">
+                {tourJourney.attractions.map(attr => (
+                  <li key={attr}>{attr}</li>
+                ))}
+              </ul>
+            </div>
+          </DetailSection>
+        </div>
+
+        <aside className="space-y-4 lg:sticky lg:top-[9.25rem]" data-aos="fade-left">
+          <section className="rounded-xl border border-[#dce2e7] bg-white p-5 shadow-[0_8px_25px_rgba(31,48,70,0.06)]">
+            <span className="text-xs text-[#7c8694]">Harga</span>
+            <strong className="mt-1 block text-2xl font-black text-[#121820]">Hubungi Kami</strong>
+            <a
+              className="mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-primary text-xs font-bold text-white shadow-[0_8px_18px_rgba(10,167,229,0.2)] transition-colors hover:bg-primary/90"
+              href={tourWhatsAppUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <MessageCircle size={16} /> Tanya Tour
+            </a>
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <button className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-[#dfe4e8] text-xs font-medium text-[#4e5866]" type="button">
+                <Heart size={15} /> Wishlist
+              </button>
+              <div className="relative">
+                <button
+                  className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-[#dfe4e8] text-xs font-medium text-[#4e5866] transition-colors hover:bg-[#f2f5f7]"
+                  type="button"
+                  aria-expanded={isShareOpen}
+                  aria-controls="tour-share-menu"
+                  onClick={() => setIsShareOpen((currentValue) => !currentValue)}
+                >
+                  <ExternalLink size={14} /> Bagikan
+                </button>
+                {isShareOpen && (
+                  <div
+                    className="absolute top-[calc(100%+0.5rem)] right-0 z-20 w-40 overflow-hidden rounded-lg border border-[#dce2e7] bg-white p-1.5 shadow-[0_12px_30px_rgba(31,48,70,0.15)]"
+                    id="tour-share-menu"
+                  >
+                    {socialShareLinks.map((platform) => (
+                      <a
+                        className="flex items-center justify-between rounded-md px-3 py-2 text-xs font-medium text-[#4e5866] transition-colors hover:bg-[#eef7fb] hover:text-primary"
+                        href={platform.href}
+                        key={platform.label}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={() => setIsShareOpen(false)}
+                      >
+                        {platform.label}
+                        <ExternalLink size={12} />
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </main>
   )
 }
