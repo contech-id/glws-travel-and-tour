@@ -29,7 +29,6 @@ import {
   Quote,
   Search,
   ShieldCheck,
-  Ship,
   Sparkles,
   Star,
   Target,
@@ -49,6 +48,15 @@ import serviceData from './data/serviceData.json'
 import articleDataSeed from './data/articleData.json'
 import eventPromoData from './data/eventPromoData.json'
 import tourListData from './data/tourListData.json'
+import galleryImage1 from './assets/gallery/gallery1.jpeg'
+import galleryImage2 from './assets/gallery/gallery2.jpeg'
+import galleryImage3 from './assets/gallery/gallery3.jpeg'
+import galleryVideo4 from './assets/gallery/gallery4.mp4'
+import galleryVideo5 from './assets/gallery/gallery5.mp4'
+import galleryVideo6 from './assets/gallery/gallery6.mp4'
+import galleryVideo7 from './assets/gallery/gallery7.mp4'
+import galleryVideo8 from './assets/gallery/gallery8.mp4'
+import galleryVideo9 from './assets/gallery/gallery9.mp4'
 
 const navLinks = [
   { label: 'Beranda', href: '/', page: 'home' },
@@ -68,11 +76,30 @@ const wisataCategories = tourData.categories.map((category) => ({
 
 let tourPackages = tourData.packages
 let articleData = { ...articleDataSeed, articles: articleDataSeed.articles }
-let tourJourneys = tourListData
+const createTourSlug = (title = '') => encodeURIComponent(title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''))
+
+function normalizeTourJourney(tour) {
+  const image = tour.image || ''
+  const priceSummary = tour.priceSummary || (tour.price ? `Rp${Number(tour.price).toLocaleString('id-ID')}/orang` : 'Hubungi Kami')
+
+  return {
+    ...tour,
+    slug: tour.slug || createTourSlug(tour.title),
+    image,
+    date: tour.date || tour.startDate || '-',
+    travelers: tour.travelers || (tour.capacity ? `${tour.capacity} Traveler` : '-'),
+    priceSummary,
+    gallery: Array.isArray(tour.gallery) && tour.gallery.length ? tour.gallery : (image ? [image] : []),
+    facilities: Array.isArray(tour.facilities) ? tour.facilities : [],
+    attractions: Array.isArray(tour.attractions) ? tour.attractions : (Array.isArray(tour.itinerary) ? tour.itinerary : []),
+  }
+}
+
+let tourJourneys = tourListData.map(normalizeTourJourney)
 
 function getPackageWhatsAppUrl(tourPackage) {
   const message = [
-    'Halo Ganes Tour, saya tertarik dengan paket tour berikut:',
+    'Halo PT. Ganes Lancar Wisata Sukses, saya tertarik dengan paket tour berikut:',
     '',
     `Nama Paket: ${tourPackage.title}`,
     `Kategori: ${tourPackage.category}`,
@@ -86,6 +113,18 @@ function getPackageWhatsAppUrl(tourPackage) {
   ].join('\n')
 
   return `https://wa.me/6281330663930?text=${encodeURIComponent(message)}`
+}
+
+function normalizeTourPackageCategory(tourPackage) {
+  const categorySlug = tourPackage.categorySlug === 'wisata-dalam-negeri'
+    ? 'wisata-dalam-negeri'
+    : 'wisata-luar-negeri'
+
+  return {
+    ...tourPackage,
+    categorySlug,
+    category: categorySlug === 'wisata-dalam-negeri' ? 'Travel Domestik' : 'Travel Internasional',
+  }
 }
 
 const serviceLinks = serviceData.services.map((service) => ({
@@ -150,52 +189,6 @@ const aboutGallery = [
   {
     src: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=520&q=80',
     alt: 'Destinasi wisata alam pilihan',
-  },
-]
-
-const aboutBenefits = [
-  {
-    icon: Users,
-    title: 'Tim Profesional',
-    description: 'Konsultan perjalanan, tour leader, dan mitra lokal yang memahami kebutuhan jamaah serta traveler.',
-  },
-  {
-    icon: Target,
-    title: 'Itinerary Tepat',
-    description: 'Rute disusun efisien, nyaman, dan tetap memberi ruang untuk pengalaman berkesan di setiap kota.',
-  },
-  {
-    icon: ShieldCheck,
-    title: 'Layanan Terjamin',
-    description: 'Pendampingan jelas sejak konsultasi, keberangkatan, perjalanan, sampai kembali ke rumah.',
-  },
-]
-
-const whyUsBenefits = [
-  {
-    icon: ShieldCheck,
-    title: 'Legalitas Resmi Terjamin',
-    description: 'PT Ganes Lancar adalah biro perjalanan resmi yang memiliki izin penuh dari kementerian terkait. Keamanan dan kenyamanan perjalanan Anda adalah prioritas utama.',
-  },
-  {
-    icon: Users,
-    title: 'Tim Profesional & Berpengalaman',
-    description: 'Didukung oleh Tour Leader dan Tour Guide bersertifikat yang siap membantu setiap kebutuhan Anda selama perjalanan dari awal hingga akhir.',
-  },
-  {
-    icon: Compass,
-    title: 'Destinasi & Itinerary Pilihan',
-    description: 'Rute perjalanan disusun secara cermat untuk memastikan waktu Anda tidak terbuang sia-sia dan mendapatkan pengalaman terbaik di setiap destinasi.',
-  },
-  {
-    icon: Headphones,
-    title: 'Layanan Pelanggan Responsif',
-    description: 'Tim support kami siap membantu kapan saja. Komunikasi transparan mengenai fasilitas, akomodasi, dan proses pengurusan dokumen.',
-  },
-  {
-    icon: Target,
-    title: 'Harga Kompetitif & Transparan',
-    description: 'Kami menawarkan paket perjalanan dengan harga terbaik tanpa biaya tersembunyi. Nilai maksimal untuk setiap rupiah yang Anda investasikan.',
   },
 ]
 
@@ -361,7 +354,7 @@ const footerColumns = [
   },
   {
     title: 'Destinasi',
-    links: ['Dalam Negeri', 'Luar Negeri', 'Wisata Religi', 'Kapal Pesiar'],
+    links: ['Travel Domestik', 'Travel Internasional'],
   },
   {
     title: 'Layanan Bisnis',
@@ -451,14 +444,9 @@ function App() {
     let ignore = false
     const loadApiData = () => Promise.all([api.list('tour-packages'), api.list('articles'), api.list('tours')]).then(([packages, articles, tours]) => {
       if (ignore) return
-      tourPackages = packages
+      tourPackages = packages.map(normalizeTourPackageCategory)
       articleData = { ...articleDataSeed, articles }
-      tourJourneys = tours.length ? tours.map((tour) => ({
-        ...tour,
-        slug: tour.slug || encodeURIComponent(tour.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')),
-        title: tour.title, location: tour.location || '', image: tour.image || '',
-        attractions: Array.isArray(tour.itinerary) ? tour.itinerary : [],
-      })) : tourListData
+      tourJourneys = tours.length ? tours.map(normalizeTourJourney) : tourListData.map(normalizeTourJourney)
       refreshApiData((value) => value + 1)
     }).catch(() => {})
     loadApiData()
@@ -556,7 +544,7 @@ function App() {
       ) : route.page === 'package' ? (
         <TourPackageDetailPage slug={route.slug} onNavigate={navigateTo} />
       ) : route.page === 'tour' ? (
-        <TourDetailPage slug={route.slug} onNavigate={navigateTo} />
+        <TourJourneyDetailPage slug={route.slug} onNavigate={navigateTo} />
       ) : route.page === 'service' ? (
         <ServiceDetailPage slug={route.slug} onNavigate={navigateTo} />
       ) : route.page === 'articles' ? (
@@ -572,7 +560,9 @@ function App() {
           <ClientLogoSection />
           <TravelTypeSection onNavigate={navigateTo} />
           <TourPackageSection onNavigate={navigateTo} />
-          <TourListSection />
+          <TourListSection onNavigate={navigateTo} />
+          <OtherServicesSection />
+          <GalleryCarouselSection />
           <GoogleBusinessSection />
           <EventPromoSection />
           <CTASection />
@@ -714,7 +704,7 @@ function TourPackageDetailPage({ slug, onNavigate }) {
   const categoryLink = category ?? navLinks[2]
   const packageWhatsAppUrl = getPackageWhatsAppUrl(tourPackage)
   const shareUrl = encodeURIComponent(`${window.location.origin}/paket-tour/${tourPackage.slug}`)
-  const shareText = encodeURIComponent(`Lihat paket ${tourPackage.title} dari Ganes Tour mulai ${tourPackage.price}.`)
+  const shareText = encodeURIComponent(`Lihat paket ${tourPackage.title} dari PT. Ganes Lancar Wisata Sukses mulai ${tourPackage.price}.`)
   const socialShareLinks = [
     { label: 'WhatsApp', href: `https://wa.me/?text=${shareText}%20${shareUrl}` },
     { label: 'Facebook', href: `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}` },
@@ -1435,8 +1425,8 @@ function AboutPage() {
             Tentang Kami
           </h1>
           <p className="mx-auto mt-5 max-w-[38rem] text-xs leading-6 font-medium text-white/90 drop-shadow md:text-sm">
-            PT. Ganes Lancar membantu Anda merancang perjalanan wisata domestik, internasional, dan tour keluarga
-            dengan pendampingan yang rapi dari konsultasi sampai pulang kembali.
+            PT. Ganes Lancar Wisata Sukses adalah Biro Perjalanan Wisata (TDUP) yang siap menjadi solusi perjalanan
+            wisata domestik dan internasional Anda.
           </p>
         </div>
 
@@ -1458,17 +1448,20 @@ function AboutPage() {
       <section className="px-6 py-14 md:px-18 md:py-[4.5rem]">
         <div className="mx-auto max-w-[74rem]" data-aos="fade-up">
           <h2 className="max-w-[43rem] text-[clamp(1.75rem,3.7vw,3rem)] font-black leading-[1.1] tracking-[-0.055em] text-[#1f222b]">
-            Kami memastikan setiap perjalanan tertata nyaman dan bermakna
+            PROFIL PERUSAHAAN
           </h2>
 
-          <div className="mt-8 grid gap-8 text-sm leading-7 text-[#6c7280] md:grid-cols-2 md:gap-[4.5rem]">
+          <div className="mt-8 max-w-[52rem] text-sm leading-7 text-[#6c7280]">
             <p>
-              Sejak awal konsultasi, tim kami membantu memilih paket, jadwal, hotel, transportasi,
-              hingga kebutuhan dokumen agar perjalanan ibadah maupun liburan terasa lebih tenang.
+              Kami, “PT. Ganes Lancar Wisata Sukses”, adalah Biro Perjalanan Wisata (TDUP) dari PT. Ganes Lancar Wisata Sukses.
+              Berdiri sejak tahun 2016, sejak itu pula telah menjadi komitmen kami untuk memberikan solusi terbaik kepada konsumen
+              di bidang tour and travel. Percayakan kebutuhan perjalanan wisata Anda kepada PT. Ganes Lancar Wisata Sukses.
             </p>
             <p>
-              Kami percaya perjalanan terbaik lahir dari detail yang diperhatikan: rute yang efisien,
-              pendamping yang responsif, pilihan destinasi yang bernilai, dan informasi yang jelas.
+              Seiring perjalanan waktu, sebagai perusahaan yang berkecimpung di dunia pariwisata, kami juga telah menjalin kerja sama
+              strategis dengan perusahaan nasional dan internasional. Kerja sama kami lakukan dengan perusahaan dari industri penerbangan,
+              perhotelan, hingga tour operator di berbagai belahan dunia. Semua demi memberikan pelayanan terbaik kepada para konsumen
+              termasuk Anda.
             </p>
           </div>
         </div>
@@ -1491,26 +1484,29 @@ function AboutPage() {
             </button>
             <div className="absolute right-6 -bottom-7 left-6 rounded-xl bg-white px-5 py-4 text-center shadow-[0_16px_35px_rgba(35,42,58,0.13)]">
               <strong className="block text-sm font-black tracking-[-0.02em] text-[#1d2028]">
-                "Perjalanan nyaman, ibadah tenang"
+                "Perjalanan nyaman, layanan terpercaya"
               </strong>
-              <span className="mt-1 block text-xs font-medium text-[#818796]">Prinsip Layanan Kami</span>
+              <span className="mt-1 block text-xs font-medium text-[#818796]">PT. Ganes Lancar Wisata Sukses</span>
             </div>
           </div>
 
           <div className="pt-8 lg:pt-0" data-aos="fade-left">
             <p className="mb-3 inline-flex items-center gap-2 text-xs font-bold text-primary">
-              <Compass size={15} /> Cara Kami Bekerja
+              <Compass size={15} /> VISI KAMI
             </p>
             <h2 className="max-w-[34rem] text-[clamp(1.75rem,3.5vw,2.75rem)] font-black leading-[1.08] tracking-[-0.055em] text-[#1f222b]">
-              Kami mendampingi perjalanan dari rencana sampai cerita pulang
+              Menjadi perusahaan perjalanan dan pariwisata yang menyediakan layanan di seluruh dunia.
             </h2>
-            <p className="mt-5 max-w-[35rem] text-sm leading-7 text-[#6b7280]">
-              Setiap paket disusun dengan perhatian pada kenyamanan, waktu ibadah, akses transportasi,
-              kualitas akomodasi, dan pengalaman lokal yang sesuai dengan kebutuhan traveler Indonesia.
-            </p>
-            <blockquote className="mt-7 border-l-[3px] border-[#ffdc66] pl-5 text-sm leading-7 font-semibold text-[#2b303b]">
-              "Kami ingin setiap jamaah dan traveler merasa ditemani, bukan hanya diberangkatkan."
-            </blockquote>
+            <p className="mt-7 text-xs font-bold text-primary">MISI KAMI</p>
+            <ul className="mt-3 max-w-[35rem] list-disc space-y-2 pl-5 text-sm leading-6 text-[#6b7280]">
+              <li>Memberikan pelayanan yang terbaik pada siapa pun.</li>
+              <li>Membangun fundamental dan sinergi yang kuat dalam perusahaan kami.</li>
+              <li>Memperluas jaringan hingga seluruh dunia dengan menjalin hubungan yang erat pada setiap entitas yang terkait.</li>
+              <li>Menghadirkan nilai lebih pada perusahaan kami, rasa tanggung jawab, pekerjaan yang detail, dan memberikan layanan konsisten dan terus berkembang.</li>
+              <li>Menjadi perusahaan travel yang terkenal dan bernilai, menjaga nama baik perusahaan pada setiap layanan yang kami berikan.</li>
+              <li>Menghadirkan sesuatu yang berbeda dengan inovasi dan kreativitas yang kami berikan.</li>
+              <li>Memahami dan menyadari akan segala kebutuhan yang berbeda pada setiap pelanggan kami.</li>
+            </ul>
           </div>
         </div>
       </section>
@@ -1521,22 +1517,15 @@ function AboutPage() {
           <span className="absolute top-0 right-[25%] hidden size-2 rounded-full border-2 border-[#1f242d] md:block" aria-hidden="true" />
 
           <h2 className="mx-auto max-w-[45rem] text-[clamp(1.75rem,3.5vw,2.85rem)] font-black leading-[1.08] tracking-[-0.055em] text-[#1f222b]" data-aos="fade-up">
-            Kami membantu perjalanan Anda terasa lebih mudah dan berkesan
+            KLIEN KAMI
           </h2>
-          <p className="mx-auto mt-4 max-w-[38rem] text-sm leading-6 text-[#777f8d]" data-aos="fade-up" data-aos-delay="80">
-            Fokus kami sederhana: perjalanan yang tertata, pelayanan yang hangat, dan pengalaman yang
-            layak dikenang.
+          <p className="mx-auto mt-4 max-w-[42rem] text-sm leading-6 text-[#777f8d]" data-aos="fade-up" data-aos-delay="80">
+            PT. Ganes Lancar Wisata Sukses memiliki puluhan pelanggan dari perusahaan ternama maupun perseorangan yang tak terhitung lagi jumlahnya. Berikut beberapa di antaranya:
           </p>
 
-          <div className="mt-10 grid gap-8 md:grid-cols-3">
-            {aboutBenefits.map((benefit, index) => (
-              <article className="mx-auto max-w-[18rem]" data-aos="fade-up" data-aos-delay={index * 90} key={benefit.title}>
-                <span className="mx-auto grid size-16 place-items-center rounded-[1.35rem] bg-[#ffdc66] text-[#20242d] shadow-[0_13px_26px_rgba(201,153,21,0.2)]">
-                  <benefit.icon size={28} strokeWidth={1.8} />
-                </span>
-                <h3 className="mt-5 text-base font-black tracking-[-0.025em] text-[#20242d]">{benefit.title}</h3>
-                <p className="mt-2 text-xs leading-6 text-[#78808f]">{benefit.description}</p>
-              </article>
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 md:grid-cols-4" data-aos="fade-up" data-aos-delay="120">
+            {clients.map((client) => (
+              <ClientLogo client={client} key={`about-${client.name}`} />
             ))}
           </div>
         </div>
@@ -1555,18 +1544,16 @@ function WhyUsPage({ onNavigate }) {
       <section className="px-6 py-14 md:px-18 md:py-[4.5rem]">
         <div className="mx-auto max-w-[74rem]" data-aos="fade-up">
           <p className="mb-3 inline-flex items-center gap-2 text-xs font-bold text-primary">
-            <Target size={15} /> Mengapa Memilih Kami
+            <Target size={15} /> LEGALITAS LENGKAP
           </p>
           <h2 className="max-w-[43rem] text-[clamp(1.75rem,3.7vw,3rem)] font-black leading-[1.1] tracking-[-0.055em] text-[#1f222b]">
-            Komitmen Kami untuk Perjalanan Terbaik Anda
+            PT. Ganes Lancar Wisata Sukses, mitra perjalanan terpercaya Anda
           </h2>
 
           <div className="mt-8 grid gap-8 text-sm leading-7 text-[#6c7280] md:grid-cols-2 md:gap-[4.5rem]">
             <p>
-              Merencanakan perjalanan yang sempurna membutuhkan waktu, tenaga, dan pengalaman. Di sinilah kami hadir sebagai mitra perjalanan tepercaya Anda.
-            </p>
-            <p>
-              Dengan layanan yang komprehensif dan profesional, kami memastikan setiap momen perjalanan Anda—mulai dari keberangkatan hingga kepulangan—terasa aman, nyaman, dan tak terlupakan.
+              Berwisata membutuhkan biaya, dan pastinya Anda ingin agar bisa membelanjakan dana kepada pihak terpercaya. Kami,
+              PT. Ganes Lancar Wisata Sukses, adalah entitas resmi berbadan hukum yaitu PT. Ganes Lancar Wisata Sukses.
             </p>
           </div>
         </div>
@@ -1576,22 +1563,11 @@ function WhyUsPage({ onNavigate }) {
         <div className="mx-auto grid max-w-[74rem] items-center gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-[4.5rem]">
           <div className="pt-8 lg:pt-0" data-aos="fade-right">
             <h2 className="max-w-[34rem] text-[clamp(1.75rem,3.5vw,2.75rem)] font-black leading-[1.08] tracking-[-0.055em] text-[#1f222b]">
-              Lebih dari sekadar biro perjalanan
+              ANDAL DAN BERPENGALAMAN
             </h2>
             <p className="mt-5 max-w-[35rem] text-sm leading-7 text-[#6b7280]">
-              Kami bangga menjadi bagian dari setiap cerita perjalanan klien kami. Dari liburan keluarga yang menyenangkan, perjalanan perusahaan yang inspiratif, hingga wisata religi yang khusyuk.
+              Keandalan dalam menyelenggarakan perjalanan wisata sudah terbukti dari klien-klien kami. PT. Ganes Lancar Wisata Sukses mempunyai pengalaman mendukung puluhan perusahaan besar, mulai dari Bank BCA hingga Gudang Garam, lewat layanan wisata dan jasa yang kami sediakan. Belum lagi pelanggan perseorangan yang tak terhitung lagi banyaknya.
             </p>
-            
-            <div className="mt-8 grid grid-cols-2 gap-6">
-              <div className="border-l-2 border-primary pl-4">
-                <span className="block text-2xl font-black text-[#1f222b]">25k+</span>
-                <span className="text-xs font-semibold text-[#78808f]">Traveler Terlayani</span>
-              </div>
-              <div className="border-l-2 border-secondary pl-4">
-                <span className="block text-2xl font-black text-[#1f222b]">4.9/5</span>
-                <span className="text-xs font-semibold text-[#78808f]">Tingkat Kepuasan</span>
-              </div>
-            </div>
             
             <button 
               className="mt-10 inline-flex h-12 items-center justify-center rounded-xl bg-primary px-8 text-sm font-bold text-white shadow-[0_8px_20px_rgba(10,167,229,0.25)] transition-all hover:-translate-y-0.5 hover:bg-primary/95"
@@ -1627,28 +1603,12 @@ function WhyUsPage({ onNavigate }) {
       <section className="bg-[#f8f9fb] px-6 py-[4.5rem] text-center md:px-18 md:py-24">
         <div className="relative mx-auto max-w-[74rem]">
           <h2 className="mx-auto max-w-[45rem] text-[clamp(1.75rem,3.5vw,2.85rem)] font-black leading-[1.08] tracking-[-0.055em] text-[#1f222b]" data-aos="fade-up">
-            Keunggulan Layanan Kami
+            BERAGAM DESTINASI DAN LAYANAN
           </h2>
           <p className="mx-auto mt-4 max-w-[38rem] text-sm leading-6 text-[#777f8d]" data-aos="fade-up" data-aos-delay="80">
-            Berikut adalah alasan mengapa banyak traveler mempercayakan perjalanan mereka kepada Ganes Tour & Travel.
+            Destinasi wisata di berbagai negara tersedia di PT. Ganes Lancar Wisata Sukses. Anda juga tidak perlu direpotkan oleh hal lain sebab mulai dari pengurusan VISA hingga tiket serta hotel juga kami sediakan.
           </p>
 
-          <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {whyUsBenefits.map((benefit, index) => (
-              <article 
-                className="rounded-2xl border border-[#e8eaef] bg-white p-7 text-left shadow-[0_8px_20px_rgba(0,0,0,0.02)] transition-transform hover:-translate-y-1" 
-                data-aos="fade-up" 
-                data-aos-delay={index * 90} 
-                key={benefit.title}
-              >
-                <div className="mb-5 inline-flex size-14 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                  <benefit.icon size={26} strokeWidth={1.8} />
-                </div>
-                <h3 className="mb-3 text-lg font-bold text-[#1f222b]">{benefit.title}</h3>
-                <p className="text-sm leading-6 text-[#78808f]">{benefit.description}</p>
-              </article>
-            ))}
-          </div>
         </div>
       </section>
       <CTASection />
@@ -2044,27 +2004,15 @@ function TravelTypeSection({ onNavigate }) {
   const travelTypes = [
     {
       slug: 'wisata-dalam-negeri',
-      title: 'Tour Dalam Negeri',
+      title: 'Travel Domestik',
       description: 'Jelajahi pesona Nusantara',
       icon: MapPin,
     },
     {
       slug: 'wisata-luar-negeri',
-      title: 'Tour Luar Negeri',
+      title: 'Travel Internasional',
       description: 'Destinasi dunia pilihan',
       icon: Globe2,
-    },
-    {
-      slug: 'wisata-religi',
-      title: 'Wisata Religi',
-      description: 'Perjalanan penuh makna',
-      icon: Sparkles,
-    },
-    {
-      slug: 'wisata-kapal-pesiar',
-      title: 'Tour Kapal Pesiar',
-      description: 'Pengalaman premium di laut',
-      icon: Ship,
     },
   ].map((travelType) => ({
     ...travelType,
@@ -2087,7 +2035,7 @@ function TravelTypeSection({ onNavigate }) {
             </p>
           </div>
 
-          <div className="relative z-10 mt-7 grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="relative z-10 mx-auto mt-7 grid max-w-2xl grid-cols-1 gap-3 sm:grid-cols-2">
             {travelTypes.map((travelType, index) => {
               const Icon = travelType.icon
 
@@ -2353,7 +2301,7 @@ function WhatsAppWidget() {
   )
 }
 
-function TourListSection() {
+function TourListSection({ onNavigate }) {
   const carouselRef = useRef(null)
 
   const moveCarousel = (direction) => {
@@ -2446,13 +2394,167 @@ function TourListSection() {
                 <a
                   className="mt-3 inline-flex items-center gap-1 text-[0.68rem] font-semibold text-primary transition-colors hover:text-secondary"
                   href={`/tour/${journey.slug}`}
-                  onClick={(event) => onNavigate(event, { page: 'tour', slug: journey.slug })}
+                  onClick={(event) => onNavigate(event, { page: 'tour', slug: journey.slug, href: `/tour/${journey.slug}` })}
                 >
                   Lihat Detail <ArrowRight size={13} />
                 </a>
               </div>
             </article>
           ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+const otherServices = [
+  {
+    icon: Users,
+    title: 'EO KORPORAT/MICE',
+    description: 'Hindari segala kerepotan penyelenggaraan acara dengan solusi MICE (Meetings, Incentive, Convention, and Events) dari kami. Dengan pengalaman mendukung acara puluhan perusahaan besar, profesionalitas PT. Ganes Lancar Wisata Sukses sudah tidak perlu diragukan.',
+  },
+  {
+    icon: Globe2,
+    title: 'SEWA MODEM',
+    description: 'Butuh terkoneksi ke internet saat berada di luar negeri? Gunakan layanan sewa modem kami. Tetap terhubung ke keluarga, teman, maupun rekan bisnis melalui email, WhatsApp hingga sosial media meskipun sedang berwisata di luar Indonesia. Kami menyediakan modem kualitas terbaik dengan harga sewa terjangkau.',
+  },
+  {
+    icon: Plane,
+    title: 'TIKET',
+    description: 'Butuh tiket untuk tujuan dalam dan luar negeri? Kontak kami segera. Tak perlu repot dan risau. Layanan booking tiket penerbangan dari PT. Ganes Lancar Wisata Sukses siap membantu Anda.',
+  },
+  {
+    icon: MapPin,
+    title: 'VOUCHER HOTEL',
+    description: 'Pusing pilih hotel? Bingung mencari akomodasi terbaik? Serahkan kepada kami. Layanan pemesanan voucher hotel dari PT. Ganes Lancar Wisata Sukses memberikan Anda pilihan hotel terbaik dengan harga kompetitif.',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'LAYANAN DOKUMEN/VISA',
+    description: 'Kerumitan dan kebingungan pengurusan VISA tak perlu lagi Anda alami. PT. Ganes Lancar Wisata Sukses memberikan dukungan pengurusan dokumen perjalanan. Rencana wisata Anda ke luar negeri jadi kian mudah.',
+  },
+  {
+    icon: CalendarDays,
+    title: 'RESERVASI',
+    description: 'Kami juga melayani reservasi yang mencakup penjualan paket pelayaran, kamar hotel, sewa bus, serta penyewaan mobil.',
+  },
+]
+
+function OtherServicesSection() {
+  return (
+    <section className="bg-[#f8f9fa] px-6 py-12 md:px-18 md:py-16" id="other-services" aria-labelledby="other-services-title">
+      <div className="mx-auto max-w-[80rem]">
+        <div className="mx-auto max-w-2xl text-center" data-aos="fade-up">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#eaf4ff] px-3 py-1.5 text-xs font-semibold text-[#253044]">
+            <Sparkles size={13} className="text-secondary" />
+            Layanan Tambahan
+          </span>
+          <h2
+            className="mt-3 text-[clamp(1.35rem,2.2vw,1.8rem)] leading-tight font-bold tracking-[-0.035em] text-[#101624]"
+            id="other-services-title"
+          >
+            LAYANAN LAIN DARI KAMI
+          </h2>
+        </div>
+
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {otherServices.map((service, index) => {
+            const Icon = service.icon
+
+            return (
+              <article
+                className="rounded-2xl border border-[#e1e6eb] bg-white p-5 shadow-[0_8px_24px_rgba(42,57,78,0.06)] transition-transform hover:-translate-y-1"
+                data-aos="fade-up"
+                data-aos-delay={index * 60}
+                key={service.title}
+              >
+                <span className="grid size-11 place-items-center rounded-xl bg-primary/10 text-primary">
+                  <Icon size={21} strokeWidth={1.8} />
+                </span>
+                <h3 className="mt-4 text-sm font-black tracking-[-0.02em] text-[#172433]">{service.title}</h3>
+                <p className="mt-2 text-xs leading-6 text-[#6f7987]">{service.description}</p>
+              </article>
+            )
+          })}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+const galleryItems = [
+  { src: galleryImage1, type: 'image', alt: 'Pemandangan perjalanan wisata' },
+  { src: galleryImage2, type: 'image', alt: 'Momen liburan bersama traveler' },
+  { src: galleryImage3, type: 'image', alt: 'Destinasi wisata pilihan' },
+  { src: galleryVideo4, type: 'video', alt: 'Video suasana perjalanan wisata' },
+  { src: galleryVideo5, type: 'video', alt: 'Video pengalaman liburan traveler' },
+  { src: galleryVideo6, type: 'video', alt: 'Video pemandangan destinasi' },
+  { src: galleryVideo7, type: 'video', alt: 'Video momen perjalanan' },
+  { src: galleryVideo8, type: 'video', alt: 'Video aktivitas wisata' },
+  { src: galleryVideo9, type: 'video', alt: 'Video cerita perjalanan' },
+]
+
+function GalleryCarouselSection() {
+  const renderMedia = (item, index) => {
+    const mediaClass = 'h-full w-full object-cover transition-transform duration-700 group-hover:scale-105'
+
+    if (item.type === 'video') {
+      return (
+        <video
+          className={mediaClass}
+          src={item.src}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-label={item.alt}
+        />
+      )
+    }
+
+    return <img className={mediaClass} src={item.src} alt={item.alt} loading={index < 3 ? 'eager' : 'lazy'} />
+  }
+
+  const renderTrack = (items, direction) => (
+    <div className="gallery-marquee-viewport">
+      <div className={`gallery-marquee-track gallery-marquee-track-${direction}`}>
+        {[...items, ...items].map((item, index) => (
+          <div
+            className="group relative h-36 w-[13rem] shrink-0 overflow-hidden rounded-2xl border border-white/70 bg-[#dfe8ee] shadow-[0_10px_24px_rgba(31,48,70,0.12)] sm:h-44 sm:w-[17rem] lg:h-52 lg:w-[20rem]"
+            aria-hidden={index >= items.length}
+            key={`${direction}-${item.src}-${index}`}
+          >
+            {renderMedia(item, index)}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#07182d]/25 via-transparent to-transparent opacity-70" />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+
+  return (
+    <section className="overflow-hidden bg-white px-6 py-12 md:px-18 md:py-16" id="gallery" aria-labelledby="gallery-title">
+      <div className="mx-auto max-w-[80rem]">
+        <div className="mx-auto mb-8 max-w-2xl text-center" data-aos="fade-up">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#fff7dc] px-3 py-1.5 text-xs font-semibold text-[#253044]">
+            <Camera size={13} className="text-secondary" />
+            Galeri Perjalanan
+          </span>
+          <h2
+            className="mt-3 text-[clamp(1.35rem,2.2vw,1.8rem)] leading-tight font-bold tracking-[-0.035em] text-[#101624]"
+            id="gallery-title"
+          >
+            Cerita dari Setiap Perjalanan
+          </h2>
+          <p className="mt-1.5 text-sm text-[#7a8391]">
+            Lihat kembali momen seru dan destinasi indah yang telah kami kunjungi bersama traveler.
+          </p>
+        </div>
+
+        <div className="space-y-4" data-aos="fade-up" data-aos-delay="100">
+          {renderTrack(galleryItems, 'forward')}
+          {renderTrack([...galleryItems].reverse(), 'reverse')}
         </div>
       </div>
     </section>
@@ -2602,7 +2704,7 @@ function EventPromoSection() {
                 <h3 className="mt-3 text-lg font-black leading-tight text-[#172433]">{promo.title}</h3>
                 <p className="mt-2 min-h-12 text-xs leading-5 text-[#687382]">{promo.description}</p>
                 <strong className="mt-4 block text-sm font-black text-primary">{promo.offer}</strong>
-                <a className="mt-4 inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-[#f5c542] px-4 text-xs font-bold text-[#172433] transition-colors hover:bg-[#d9a900]" href={`https://wa.me/6281330663930?text=${encodeURIComponent(`Halo Ganes Tour, saya tertarik dengan ${promo.title}.`)}`} target="_blank" rel="noreferrer">
+                <a className="mt-4 inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-[#f5c542] px-4 text-xs font-bold text-[#172433] transition-colors hover:bg-[#d9a900]" href={`https://wa.me/6281330663930?text=${encodeURIComponent(`Halo PT. Ganes Lancar Wisata Sukses, saya tertarik dengan ${promo.title}.`)}`} target="_blank" rel="noreferrer">
                   <MessageCircle size={15} /> Info Selengkapnya
                 </a>
               </div>
@@ -3136,6 +3238,235 @@ function TourDetailPage({ slug, onNavigate }) {
                 )}
               </div>
             </div>
+          </section>
+        </aside>
+      </div>
+    </main>
+  )
+}
+
+function TourJourneyDetailPage({ slug, onNavigate }) {
+  const detailTabs = [
+    ['overview', 'Overview'],
+    ['gallery', 'Galeri'],
+    ['facilities', 'Fasilitas'],
+    ['destinations', 'Destinasi'],
+    ['faq', 'FAQ'],
+  ]
+  const [activeDetailTab, setActiveDetailTab] = useState('overview')
+  const [isShareOpen, setIsShareOpen] = useState(false)
+  const tourJourney = tourJourneys.find((item) => item.slug === slug)
+
+  useEffect(() => {
+    const updateActiveTab = () => {
+      const scrollPosition = window.scrollY + 180
+      let currentSection = detailTabs[0][0]
+
+      detailTabs.forEach(([id]) => {
+        const section = document.getElementById(id)
+        if (section && section.getBoundingClientRect().top + window.scrollY <= scrollPosition) currentSection = id
+      })
+
+      setActiveDetailTab(currentSection)
+    }
+
+    updateActiveTab()
+    window.addEventListener('scroll', updateActiveTab, { passive: true })
+    return () => window.removeEventListener('scroll', updateActiveTab)
+  }, [slug])
+
+  if (!tourJourney) return <PageNotFound onNavigate={onNavigate} />
+
+  const backLink = { page: 'home', section: 'tour-list', href: '/#tour-list' }
+  const tourWhatsAppUrl = getPackageWhatsAppUrl({
+    title: tourJourney.title,
+    category: 'List Tour',
+    location: tourJourney.location,
+    price: tourJourney.priceSummary || 'Hubungi Kami',
+    duration: '-',
+    departure: tourJourney.date || '-',
+    capacity: tourJourney.travelers || '-',
+  })
+  const shareUrl = encodeURIComponent(window.location.href)
+  const socialShareLinks = [
+    { label: 'WhatsApp', href: `https://wa.me/?text=${encodeURIComponent(`${tourJourney.title} - ${window.location.href}`)}` },
+    { label: 'Facebook', href: `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}` },
+    { label: 'X', href: `https://twitter.com/intent/tweet?url=${shareUrl}` },
+  ]
+  const faqData = [
+    {
+      question: 'Apa saja fasilitas yang sudah termasuk dalam tour ini?',
+      answer: 'Fasilitas bervariasi bergantung pada tour yang dipilih. Umumnya mencakup transportasi, akomodasi, tiket wisata utama, dan konsumsi. Silakan baca bagian detail fasilitas pada informasi tour ini.',
+    },
+    {
+      question: 'Apakah jadwal perjalanan tour bisa diubah?',
+      answer: 'Untuk tour private, jadwal sangat fleksibel dan dapat diubah sesuai kesepakatan. Namun, untuk open trip, jadwal sudah tetap dan tidak bisa diubah.',
+    },
+    {
+      question: 'Bagaimana sistem pembayarannya?',
+      answer: 'Pembayaran dapat dilakukan secara bertahap. Uang muka (DP) minimal 30% dibayarkan saat pemesanan, dan pelunasan paling lambat 7 hari sebelum keberangkatan.',
+    },
+    {
+      question: 'Apakah harga tour sudah termasuk tiket pesawat?',
+      answer: 'Beberapa tour sudah all-in termasuk tiket pesawat, namun ada pula tour land (tanpa tiket pesawat). Cek ringkasan harga di bagian atas untuk informasi lebih jelas.',
+    },
+  ]
+
+  return (
+    <main className="min-h-screen bg-[#f3f5f7] pb-20">
+      <header
+        className="relative flex min-h-[27rem] items-end overflow-hidden bg-cover bg-center px-6 pt-32 pb-16 text-white md:px-18"
+        style={{ backgroundImage: `url('${tourJourney.image}')` }}
+      >
+        <div className="absolute inset-0 bg-[#07182d]/62" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#07182d]/90 via-transparent to-[#07182d]/20" />
+        <div className="relative z-10 mx-auto w-full max-w-[72rem]" data-aos="fade-up">
+          <a
+            className="inline-flex items-center gap-2 text-xs font-semibold text-white/88 transition-colors hover:text-white"
+            href={backLink.href}
+            onClick={(event) => onNavigate(event, backLink)}
+          >
+            <ChevronLeft size={16} /> Kembali ke List Tour
+          </a>
+          <span className="mt-6 block w-8 rounded-full border-t-4 border-primary" />
+          <p className="mt-6 text-xs font-bold tracking-[0.12em] text-secondary uppercase">List Tour</p>
+          <h1 className="mt-2 max-w-[52rem] text-[clamp(2.15rem,5vw,4.25rem)] font-black leading-[1.02] tracking-[-0.045em]">
+            {tourJourney.title}
+          </h1>
+          <p className="mt-4 inline-flex items-center gap-2 text-sm text-white/85">
+            <MapPin size={16} className="text-primary" /> {tourJourney.location}
+          </p>
+        </div>
+      </header>
+
+      <nav className="sticky top-[4.5rem] z-30 border-b border-[#dce2e7] bg-white/95 px-6 backdrop-blur md:px-18" aria-label="Navigasi detail list tour">
+        <div className="mx-auto flex max-w-[72rem] gap-2 overflow-x-auto py-3">
+          {detailTabs.map(([id, label]) => (
+            <a
+              className={`shrink-0 rounded-full px-3.5 py-2 text-[0.7rem] font-semibold transition-colors ${activeDetailTab === id ? 'bg-primary text-white' : 'bg-[#f1f4f7] text-[#657080] hover:bg-secondary/15 hover:text-secondary'}`}
+              href={`#${id}`}
+              key={id}
+              onClick={(event) => {
+                event.preventDefault()
+                setActiveDetailTab(id)
+                document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+              }}
+            >
+              {label}
+            </a>
+          ))}
+        </div>
+      </nav>
+
+      <div className="mx-auto grid max-w-[72rem] items-start gap-5 px-6 pt-8 md:px-8 lg:grid-cols-[minmax(0,1fr)_18rem]">
+        <div className="min-w-0 space-y-7">
+          <DetailSection icon={Package} title="Ringkasan" id="overview">
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              {[
+                [CalendarDays, 'Waktu Tour', tourJourney.date || '-'],
+                [Users, 'Kapasitas', tourJourney.travelers || '-'],
+                [Package, 'Ringkasan Harga', tourJourney.priceSummary || 'Hubungi Kami'],
+              ].map(([Icon, label, value]) => (
+                <div className="rounded-lg bg-[#f2f5f7] px-3 py-4 text-center" key={label}>
+                  <Icon className="mx-auto text-secondary" size={18} />
+                  <span className="mt-2 block text-[0.65rem] text-[#7a8491]">{label}</span>
+                  <strong className="mt-1 block text-xs text-[#121820]">{value}</strong>
+                </div>
+              ))}
+            </div>
+            <p className="mt-5 text-sm leading-7 text-[#4e5866]">
+              Nikmati perjalanan bersama PT. Ganes Lancar Wisata Sukses menuju {tourJourney.location}. Temukan pengalaman terbaik di setiap destinasi yang telah kami siapkan.
+            </p>
+          </DetailSection>
+
+          <DetailSection icon={Camera} title="Galeri Foto" id="gallery">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {(tourJourney.gallery.length ? tourJourney.gallery : [tourJourney.image]).map((image, index) => (
+                <img
+                  className="aspect-[4/3] w-full rounded-lg object-cover"
+                  src={image}
+                  alt={`${tourJourney.title} galeri ${index + 1}`}
+                  loading="lazy"
+                  key={`${image}-${index}`}
+                />
+              ))}
+            </div>
+          </DetailSection>
+
+          <DetailSection icon={ShieldCheck} title="Fasilitas" id="facilities">
+            <div className="grid gap-3 sm:grid-cols-2">
+              {(tourJourney.facilities.length ? tourJourney.facilities : ['Transportasi selama perjalanan', 'Akomodasi sesuai itinerary', 'Tiket wisata utama', 'Pendampingan tour leader']).map((facility, index) => (
+                <div className="flex items-center gap-3 rounded-lg border border-[#e3e8ec] bg-[#f8fafb] px-4 py-3 text-sm text-[#4e5866]" key={`${facility}-${index}`}>
+                  <ShieldCheck className="shrink-0 text-secondary" size={17} />
+                  {facility}
+                </div>
+              ))}
+            </div>
+          </DetailSection>
+
+          <DetailSection icon={MapPin} title="Destinasi" id="destinations">
+            <div className="grid gap-3 sm:grid-cols-2">
+              {(tourJourney.attractions.length ? tourJourney.attractions : ['Destinasi pilihan sesuai itinerary']).map((attraction, index) => (
+                <div className="flex items-center gap-3 rounded-lg border border-[#e3e8ec] bg-[#f8fafb] px-4 py-3 text-sm text-[#4e5866]" key={`${attraction}-${index}`}>
+                  <span className="grid size-7 shrink-0 place-items-center rounded-full bg-primary/10 text-xs font-bold text-primary">{index + 1}</span>
+                  {attraction}
+                </div>
+              ))}
+            </div>
+          </DetailSection>
+
+          <DetailSection icon={MessageCircle} title="Pertanyaan Umum (FAQ)" id="faq">
+            <div className="space-y-3">
+              {faqData.map((item, index) => (
+                <PackageFaqItem item={item} index={index} key={item.question} />
+              ))}
+            </div>
+          </DetailSection>
+        </div>
+
+        <aside className="space-y-4 lg:sticky lg:top-[9.25rem]" data-aos="fade-left">
+          <section className="rounded-xl border border-[#dce2e7] bg-white p-5 shadow-[0_8px_25px_rgba(31,48,70,0.06)]">
+            <span className="text-xs text-[#7c8694]">Harga</span>
+            <strong className="mt-1 block text-2xl font-black text-[#121820]">{tourJourney.priceSummary || 'Hubungi Kami'}</strong>
+            <a
+              className="mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-primary text-xs font-bold text-white shadow-[0_8px_18px_rgba(10,167,229,0.2)] transition-colors hover:bg-primary/90"
+              href={tourWhatsAppUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <MessageCircle size={16} /> Tanya Tour
+            </a>
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <button className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-[#dfe4e8] text-xs font-medium text-[#4e5866]" type="button">
+                <Heart size={15} /> Wishlist
+              </button>
+              <div className="relative">
+                <button
+                  className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-[#dfe4e8] text-xs font-medium text-[#4e5866] transition-colors hover:border-secondary hover:text-secondary"
+                  type="button"
+                  aria-expanded={isShareOpen}
+                  aria-controls="tour-share-menu"
+                  onClick={() => setIsShareOpen((currentValue) => !currentValue)}
+                >
+                  <ExternalLink size={14} /> Bagikan
+                </button>
+                {isShareOpen && (
+                  <div className="absolute top-[calc(100%+0.5rem)] right-0 z-20 w-40 overflow-hidden rounded-lg border border-[#dce2e7] bg-white p-1.5 shadow-[0_12px_30px_rgba(31,48,70,0.15)]" id="tour-share-menu">
+                    {socialShareLinks.map((platform) => (
+                      <a className="flex items-center justify-between rounded-md px-3 py-2 text-xs font-medium text-[#4e5866] transition-colors hover:bg-[#eef7fb] hover:text-primary" href={platform.href} key={platform.label} target="_blank" rel="noreferrer" onClick={() => setIsShareOpen(false)}>
+                        {platform.label}
+                        <ExternalLink size={12} />
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+          <section className="rounded-xl border border-[#dce2e7] bg-white p-5 text-xs text-[#6f7987]">
+            <p className="flex items-center gap-2"><ShieldCheck className="text-[#10b981]" size={15} /> Legalitas usaha terverifikasi</p>
+            <p className="mt-3 flex items-center gap-2"><Star className="text-[#ffb311]" size={15} fill="currentColor" /> Pendampingan profesional</p>
+            <p className="mt-3 flex items-center gap-2"><Users className="text-secondary" size={15} /> Siap melayani perjalanan Anda</p>
           </section>
         </aside>
       </div>
